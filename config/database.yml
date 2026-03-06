@@ -2,15 +2,17 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DB_USERNAME", nil) %>
+  password: <%= ENV.fetch("DB_PASSWORD", nil) %>
 
 development:
   <<: *default
-  host: localhost
+  host: <%= ENV.fetch("DB_HOST", nil) %>
   database: arkheion_backend_development
 
 test:
   <<: *default
-  host: localhost
+  host: <%= ENV.fetch("DB_HOST", nil) %>
   database: arkheion_backend_test
 
 production:

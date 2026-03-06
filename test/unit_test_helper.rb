@@ -2,6 +2,11 @@
 
 # Minimal test helper for pure unit tests that don't require database access.
 # Use this instead of test_helper.rb in pipeline pipe tests and other isolated units.
+if ENV["COVERAGE"]
+  require "simplecov"
+  SimpleCov.start
+end
+
 ENV["RAILS_ENV"] ||= "test"
 
 require_relative "../config/environment"

@@ -40,8 +40,7 @@ module Tormenta20
           {
             key: class_key,
             name: classe&.name || class_key.humanize,
-            level: ups.count,
-            description: classe&.description
+            level: ups.count
           }
         end
       end

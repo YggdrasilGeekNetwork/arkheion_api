@@ -47,12 +47,12 @@ module Tormenta20
         end
 
         def initialize_state(sheet)
-          snapshot_result = Snapshots::Generate.new.call(character_sheet: sheet)
-          return snapshot_result if snapshot_result.failure?
+          # The snapshot was already generated in generate_initial_snapshot.
+          # Load it directly from the DB to avoid Dry::Operation double-wrapping.
+          snapshot = sheet.latest_snapshot
+          return Failure[:not_found, "No snapshot available after generation"] unless snapshot
 
-          snapshot = snapshot_result.value![:snapshot]
           state = sheet.character_state
-
           state.update!(
             current_pv: snapshot.pv_max,
             current_pm: snapshot.pm_max

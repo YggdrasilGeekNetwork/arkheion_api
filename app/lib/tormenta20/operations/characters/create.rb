@@ -12,9 +12,10 @@ module Tormenta20
 
           step build_first_level_up(sheet, params)
 
-          snapshot_result = Operations::Snapshots::Generate.new.call(character_sheet: sheet.reload, force: true)
-          return Failure[:snapshot_error, snapshot_result.failure] if snapshot_result.failure?
-          snapshot = snapshot_result.value![:snapshot]
+          generate_result = Operations::Snapshots::Generate.new.call(character_sheet: sheet.reload, force: true)
+          return Failure[:snapshot_error, generate_result.failure] if generate_result.failure?
+          snapshot = sheet.reload.latest_snapshot
+          return Failure[:snapshot_error, "Snapshot not persisted"] unless snapshot
 
           state = step initialize_state(sheet, snapshot)
           sheet.increment!(:character_version)

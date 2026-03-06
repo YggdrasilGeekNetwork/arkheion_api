@@ -1,8 +1,37 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
-#
-# Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
+# House style overrides — keep this list minimal and intentional.
+
+# Array brackets: use `[a, [b, c]]` not `[ a, [ b, c ] ]`
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: false
+
+# No hard limits on method/class/block length — rely on code review instead.
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+# No ABC / cyclomatic / perceived complexity limits.
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# Relax line length — 150 chars is a reasonable limit.
+Layout/LineLength:
+  Max: 150
+  AllowedPatterns:
+    - '\A\s*#'   # comments can be longer (URLs, etc.)

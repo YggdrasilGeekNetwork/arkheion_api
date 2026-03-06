@@ -1,13 +1,2 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  name: MyString
-  description: MyText
-  data: 
-  temp: 
-
-two:
-  name: MyString
-  description: MyText
-  data: 
-  temp: 
+# Operation tests create their own data — no shared fixtures needed.
+# Add records here only for tests that explicitly reference fixture(:name).

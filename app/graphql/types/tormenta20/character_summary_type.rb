@@ -14,7 +14,7 @@ module Types
       def classes
         object.class_levels.map do |class_key, lvl|
           classe = ::Tormenta20::Models::Classe.find_by(id: class_key)
-          { name: classe&.name || class_key.humanize, level: lvl, tooltip: classe&.description }
+          { name: classe&.name || class_key.humanize, level: lvl }
         end
       end
 

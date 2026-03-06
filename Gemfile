@@ -24,4 +24,5 @@ group :development, :test do
   gem "annotate"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
+  gem "simplecov", require: false
 end
