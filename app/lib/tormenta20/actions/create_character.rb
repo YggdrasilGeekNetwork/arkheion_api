@@ -6,9 +6,9 @@ module Tormenta20
       def call(params:, user:)
         yield authorize!(user: user, resource: CharacterSheet, action: :create)
 
-        result = yield with_transaction do
+        result = yield with_transaction {
           Interactions::CharacterSheets::Create.call(params: params, user: user)
-        end
+        }
 
         sheet = result[:character_sheet]
 

@@ -8,10 +8,10 @@ module Tormenta20
         yield authorize!(user: user, resource: sheet, action: :update)
         yield validate_can_level_up(sheet)
 
-        result = yield with_transaction do
+        result = yield with_transaction {
           level_params = params.merge(level: sheet.current_level + 1)
           Interactions::LevelUps::Create.call(character_sheet: sheet, params: level_params)
-        end
+        }
 
         # Regenerate snapshot after level up
         yield Interactions::Snapshots::Generate.call(character_sheet: sheet.reload, force: true)
@@ -39,13 +39,13 @@ module Tormenta20
         if sheet
           Success(sheet)
         else
-          Failure(error: :not_found, message: 'Character sheet not found')
+          Failure(error: :not_found, message: "Character sheet not found")
         end
       end
 
       def validate_can_level_up(sheet)
         if sheet.current_level >= 20
-          Failure(error: :max_level, message: 'Character is already at maximum level')
+          Failure(error: :max_level, message: "Character is already at maximum level")
         else
           Success(true)
         end
