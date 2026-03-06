@@ -31,7 +31,7 @@ module Tormenta20
         if record.save
           Success(record)
         else
-          Failure[:persistence_error, record.errors.to_h]
+          Failure[:persistence_error, record.errors.to_hash]
         end
       end
 

@@ -4,6 +4,13 @@ require "test_helper"
 
 # Shared helpers for operation integration tests.
 # These tests require the database (PostgreSQL).
+#
+# Dry::Operation wraps return values differently depending on the exit path:
+#   - Success via call  → Success(Success({...}))  outer=Success, inner=Success
+#   - Failure via step  → Failure([...])            proper Failure
+#   - Failure via early return (return Failure[...]) → Success(Failure([...]))
+#
+# `unwrap_result` normalises all three to a single inner monad.
 module OperationTestCase
   VALID_SHEET_ATTRS = {
     "forca" => 15, "destreza" => 14, "constituicao" => 13,
@@ -52,18 +59,26 @@ module OperationTestCase
       first_level_params: valid_first_level_params,
       user: user
     )
-    assert result.success?, "Sheet creation failed: #{result.failure.inspect}"
-    result.value![:character_sheet]
+    monad = unwrap_result(result)
+    assert monad.success?, "Sheet creation failed: #{monad.failure.inspect}"
+    monad.value![:character_sheet]
+  end
+
+  # Returns the inner monad (Success or Failure) after stripping Dry::Operation's outer wrapper.
+  def unwrap_result(result)
+    result.success? ? result.value! : result
   end
 
   def success!(result, msg = nil)
-    assert result.success?, msg || "Expected Success but got Failure: #{result.failure.inspect}"
-    result.value!
+    monad = unwrap_result(result)
+    assert monad.success?, msg || "Expected Success but got Failure: #{monad.failure.inspect}"
+    monad.value!
   end
 
   def failure!(result, expected_type = nil)
-    assert result.failure?, "Expected Failure but got Success"
-    type, payload = result.failure
+    monad = unwrap_result(result)
+    assert monad.failure?, "Expected Failure but got Success: #{monad.success? ? monad.value!.inspect : 'unknown'}"
+    type, payload = monad.failure
     assert_equal expected_type, type if expected_type
     payload
   end

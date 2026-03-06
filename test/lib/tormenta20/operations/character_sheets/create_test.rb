@@ -72,8 +72,9 @@ class CharacterSheetCreateOperationTest < ActiveSupport::TestCase
   end
 
   test "fails when sheet_attributes sum is out of range" do
-    bad_attrs = { "forca" => 8, "destreza" => 8, "constituicao" => 8,
-                  "inteligencia" => 8, "sabedoria" => 8, "carisma" => 8 }
+    # 7×6 = 42 < 48 minimum — clearly invalid
+    bad_attrs = { "forca" => 7, "destreza" => 7, "constituicao" => 7,
+                  "inteligencia" => 7, "sabedoria" => 7, "carisma" => 7 }
     result = Tormenta20::Operations::CharacterSheets::Create.new.call(
       params: valid_sheet_params(sheet_attributes: bad_attrs),
       first_level_params: nil,
