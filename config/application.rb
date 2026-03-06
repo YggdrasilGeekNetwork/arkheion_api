@@ -36,6 +36,18 @@ module ArkheionBackend
     # to Zeitwerk's scan list, bypassing autoload_paths. Use ignore() instead.
     Rails.autoloaders.main.ignore(Rails.root.join("app/graphql"))
 
+    # Several schema files define multiple constants in one file (Zeitwerk
+    # requires one constant per file). Ignore them and require explicitly so all
+    # constants are available before any contract or model references them.
+    %w[
+      app/contracts/tormenta20/schemas/character_state_schema
+      app/contracts/tormenta20/schemas/level_up_schema
+      app/contracts/tormenta20/schemas/snapshot_schema
+    ].each do |path|
+      Rails.autoloaders.main.ignore(Rails.root.join("#{path}.rb"))
+      require Rails.root.join(path)
+    end
+
     # Eagerly load all GraphQL files at boot in dependency order.
     # Uses load() instead of require() to bypass Zeitwerk's constant validation.
     # Guard: app/graphql is excluded from Zeitwerk, so constants are never unloaded
