@@ -16,7 +16,7 @@ module Tormenta20
 
         def update_sheet(sheet, params)
           allowed_params = params.slice(
-            :name, :deity_key, :sheet_attributes, :race_choices,
+            :name, :deity_key, :image_url, :sheet_attributes, :race_choices,
             :origin_choices, :proficiencies, :metadata
           ).compact
 

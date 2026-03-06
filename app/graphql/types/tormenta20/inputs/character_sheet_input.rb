@@ -44,6 +44,7 @@ module Types
 
       class CharacterSheetUpdateInput < Types::BaseInputObject
         argument :name, String, required: false
+        argument :image_url, String, required: false
         argument :deity_key, String, required: false
         argument :sheet_attributes, AttributesInput, required: false
         argument :race_choices, RaceChoicesInput, required: false
