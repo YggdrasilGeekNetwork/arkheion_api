@@ -19,35 +19,35 @@ module Tormenta20
         required(:base).filled(:integer)
         required(:modifier).filled(:integer)
         required(:total).filled(:integer)
-        optional(:bonuses).array
+        optional(:bonuses).array(:hash)
       end
 
       required(:constituicao).hash do
         required(:base).filled(:integer)
         required(:modifier).filled(:integer)
         required(:total).filled(:integer)
-        optional(:bonuses).array
+        optional(:bonuses).array(:hash)
       end
 
       required(:inteligencia).hash do
         required(:base).filled(:integer)
         required(:modifier).filled(:integer)
         required(:total).filled(:integer)
-        optional(:bonuses).array
+        optional(:bonuses).array(:hash)
       end
 
       required(:sabedoria).hash do
         required(:base).filled(:integer)
         required(:modifier).filled(:integer)
         required(:total).filled(:integer)
-        optional(:bonuses).array
+        optional(:bonuses).array(:hash)
       end
 
       required(:carisma).hash do
         required(:base).filled(:integer)
         required(:modifier).filled(:integer)
         required(:total).filled(:integer)
-        optional(:bonuses).array
+        optional(:bonuses).array(:hash)
       end
     end
 
@@ -58,28 +58,28 @@ module Tormenta20
         optional(:armor_bonus).filled(:integer)
         optional(:shield_bonus).filled(:integer)
         optional(:dexterity_bonus).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
 
       required(:fortitude).hash do
         required(:base).filled(:integer)
         required(:total).filled(:integer)
         optional(:attribute_bonus).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
 
       required(:reflexos).hash do
         required(:base).filled(:integer)
         required(:total).filled(:integer)
         optional(:attribute_bonus).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
 
       required(:vontade).hash do
         required(:base).filled(:integer)
         required(:total).filled(:integer)
         optional(:attribute_bonus).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
     end
 
@@ -88,7 +88,7 @@ module Tormenta20
       required(:attribute_modifier).filled(:integer)
       required(:total).filled(:integer)
       required(:trained).filled(:bool)
-      optional(:other_bonuses).array
+      optional(:other_bonuses).array(:hash)
     end
 
     ComputedCombatSchema = Dry::Schema.JSON do
@@ -97,13 +97,13 @@ module Tormenta20
       required(:melee_attack).hash do
         required(:total).filled(:integer)
         required(:attribute_modifier).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
 
       required(:ranged_attack).hash do
         required(:total).filled(:integer)
         required(:attribute_modifier).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
 
       optional(:weapons).array do
@@ -124,21 +124,21 @@ module Tormenta20
         required(:max).filled(:integer)
         required(:base).filled(:integer)
         optional(:constitution_bonus).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
 
       required(:pm).hash do
         required(:max).filled(:integer)
         required(:base).filled(:integer)
         optional(:attribute_bonus).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
 
       required(:deslocamento).hash do
         required(:base).filled(:integer)
         required(:total).filled(:integer)
         optional(:armor_penalty).filled(:integer)
-        optional(:other_bonuses).array
+        optional(:other_bonuses).array(:hash)
       end
     end
 
