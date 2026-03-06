@@ -12,8 +12,20 @@ gem "bootsnap", require: false
 
 gem "thruster", require: false
 
+gem "graphql", "~> 2.3"
+gem "rack-cors"
+gem "bcrypt", "~> 3.1"
+gem "dry-monads"
+gem "dry-operation"
+gem "dry-validation"
+gem "jwt"
+
+gem "tormenta20", "~> 0.2.6"
+
 group :development, :test do
+  gem "dotenv-rails"
   gem "pry"
+  gem "annotate"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
 end

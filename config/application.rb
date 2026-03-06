@@ -28,5 +28,72 @@ module ArkheionBackend
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # GraphQL files are loaded manually in dependency order (below).
+    # Zeitwerk must ignore app/graphql because many files define multiple
+    # constants — Zeitwerk requires one constant per file.
+    # config.autoload_paths.delete does NOT work: Rails adds app/* dirs directly
+    # to Zeitwerk's scan list, bypassing autoload_paths. Use ignore() instead.
+    Rails.autoloaders.main.ignore(Rails.root.join("app/graphql"))
+
+    # Eagerly load all GraphQL files at boot in dependency order.
+    # Uses load() instead of require() to bypass Zeitwerk's constant validation.
+    # Guard: app/graphql is excluded from Zeitwerk, so constants are never unloaded
+    # between requests. Running the block twice causes DuplicateNamesError (graphql-ruby
+    # detects fields registered twice when a class is reopened). Skip if already loaded.
+    config.to_prepare do
+      next if defined?(ArkheionSchema)
+
+      gql = Rails.root.join("app/graphql")
+
+      # 1. Base types (no deps)
+      %w[base_argument base_field base_object base_input_object
+         base_enum base_scalar base_union base_interface node_type].each do |f|
+        load gql.join("types/#{f}.rb")
+      end
+
+      # 2. Tormenta20 output types (dependency order: leaves first)
+      %w[
+        ability_type
+        attribute_value_type
+        computed_attributes_type
+        defense_value_type
+        combat_type
+        resource_value_type
+        proficiencies_type
+        spell_type
+        skill_value_type
+        level_up_type
+        character_state_type
+        character_snapshot_type
+        character_sheet_type
+        character_view_type
+        character_type
+        character_summary_type
+        rulebook_type
+      ].each { |f| load gql.join("types/tormenta20/#{f}.rb") }
+
+      # 3. Input types
+      Dir[gql.join("types/tormenta20/inputs/*.rb")].sort.each { |f| load f }
+
+      # 4. Auth types (dependency order: user_type before auth_payload_type)
+      %w[user_type auth_payload_type].each { |f| load gql.join("types/auth/#{f}.rb") }
+
+      # 5. Mutations and queries (resolver classes must exist before root types reference them)
+      # base_mutation.rb must be first — apply_combat_action.rb precedes it alphabetically
+      # but inherits from BaseMutation.
+      load gql.join("mutations/tormenta20/base_mutation.rb")
+      Dir[gql.join("mutations/**/*.rb")].sort
+                                        .reject { |f| f.end_with?("base_mutation.rb") }
+                                        .each { |f| load f }
+      Dir[gql.join("queries/**/*.rb")].sort.each { |f| load f }
+
+      # 6. Query and mutation root types (reference resolver classes defined above)
+      load gql.join("types/query_type.rb")
+      load gql.join("types/mutation_type.rb")
+
+      # 8. Schema (last)
+      load gql.join("arkheion_schema.rb")
+    end
   end
 end
