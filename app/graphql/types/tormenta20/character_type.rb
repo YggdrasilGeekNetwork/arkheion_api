@@ -410,7 +410,13 @@ module Types
         end
       end
 
-      def actions_list = []
+      def actions_list
+        items = []
+        items.concat(weapon_actions)
+        items.concat(active_ability_actions)
+        items.concat(spell_actions)
+        items
+      end
 
       def in_combat       = object.in_combat
       def initiative_roll = object.initiative_roll
@@ -452,6 +458,76 @@ module Types
       end
 
       private
+
+      def weapon_actions
+        object.weapons.map do |w|
+          bonus = w[:attack_bonus] || w["attack_bonus"] || 0
+          dmg   = w[:damage] || w["damage"] || "1d4"
+          sign  = bonus >= 0 ? "+#{bonus}" : bonus.to_s
+          {
+            id:     "weapon_#{w[:id] || w['id']}",
+            name:   w[:name] || w["name"] || "",
+            type:   "attack",
+            cost:   nil,
+            effect: "Ataque #{sign} — Dano #{dmg}",
+            modal:  false
+          }
+        end
+      end
+
+      def active_ability_actions
+        object.abilities.filter_map do |a|
+          effects = a[:effects] || a["effects"] || {}
+          next unless active_effects?(effects)
+
+          {
+            id:     "ability_#{a[:ability_key] || a['ability_key']}",
+            name:   a[:name] || a["name"] || "",
+            type:   (a[:type] || a["type"] || "ability").to_s,
+            cost:   extract_cost(effects),
+            effect: a[:description] || a["description"] || "",
+            modal:  false
+          }
+        end
+      end
+
+      def spell_actions
+        (object.spells["known_spells"] || object.spells[:known_spells] || []).map do |s|
+          exec    = s[:execution] || s["execution"] || ""
+          range   = s[:range] || s["range"] || ""
+          duration = s[:duration] || s["duration"] || ""
+          tooltip = [exec, range, duration].reject(&:blank?).join(" — ")
+
+          {
+            id:      "spell_#{s[:spell_key] || s['spell_key']}",
+            name:    s[:name] || s["name"] || "",
+            type:    "spell",
+            cost:    nil,
+            effect:  s[:description] || s["description"] || "",
+            tooltip: tooltip.presence
+          }
+        end
+      end
+
+      def active_effects?(effects)
+        return false unless effects.is_a?(Hash)
+        effects["type"].to_s == "active" ||
+          effects[:type].to_s == "active" ||
+          effects.key?("cost") ||
+          effects.key?(:cost)
+      end
+
+      def extract_cost(effects)
+        return nil unless effects.is_a?(Hash)
+        cost_str = (effects["cost"] || effects[:cost]).to_s
+        return nil if cost_str.blank?
+
+        if cost_str =~ /(\d+)\s*PM/i
+          { pm: $1.to_i }
+        elsif cost_str =~ /(\d+)\s*PV/i
+          { pv: $1.to_i }
+        end
+      end
 
       def format_item(item)
         return nil unless item.is_a?(Hash)
