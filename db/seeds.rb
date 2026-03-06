@@ -4,6 +4,8 @@
 # All computed data (PV max, PM max, attributes, skills, defenses, abilities)
 # is derived from the tormenta gem by the pipeline. Only choices/keys are stored.
 
+BASE_URL = ENV.fetch("BASE_URL", "http://localhost:3000")
+
 puts "Seeding users..."
 
 # ─── Users ───────────────────────────────────────────────────────────────────
@@ -55,7 +57,7 @@ create_character_with_choices(
   user: luan,
   params: {
     name:       "Thorin Escudo de Ferro",
-    image_url:  "http://localhost:3000/images/characters/thorin.png",
+    image_url:  "#{BASE_URL}/images/characters/thorin.png",
     race_key:   "humano",
     race_choices: { "chosen_abilities" => [] },
     origin_key:  "soldado",
@@ -86,7 +88,7 @@ create_character_with_choices(
   user: luan,
   params: {
     name:      "Lyra Sombravento",
-    image_url: "http://localhost:3000/images/characters/lyra.png",
+    image_url: "#{BASE_URL}/images/characters/lyra.png",
     race_key:  "elfo",
     race_choices: { "chosen_abilities" => [] },
     origin_key:   "criminoso",

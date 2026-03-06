@@ -10,8 +10,7 @@ module Tormenta20
           sheet = step build_sheet(params, user)
           sheet = step persist(sheet)
 
-          level_up = step build_first_level_up(sheet, params)
-          step persist(level_up)
+          step build_first_level_up(sheet, params)
 
           snapshot_result = step generate_snapshot(sheet.reload)
           snapshot = snapshot_result[:snapshot]
@@ -69,19 +68,8 @@ module Tormenta20
         end
 
         def build_first_level_up(sheet, params)
-          first_level = params[:first_level] || {}
-
-          level_up = LevelUp.new(
-            character_sheet: sheet,
-            level: 1,
-            class_key: first_level[:class_key],
-            class_choices: first_level[:class_choices] || {},
-            skill_points: first_level[:skill_points] || {},
-            abilities_chosen: first_level[:abilities_chosen] || {},
-            powers_chosen: first_level[:powers_chosen] || {},
-            spells_chosen: first_level[:spells_chosen] || {}
-          )
-          Success(level_up)
+          first_level = (params[:first_level] || {}).merge(level: 1)
+          LevelUps::Create.new.call(character_sheet: sheet, params: first_level)
         end
 
         def generate_snapshot(sheet)
@@ -95,13 +83,13 @@ module Tormenta20
         end
 
         def initialize_state(sheet, snapshot)
-          state = sheet.build_character_state(
+          state = sheet.character_state
+          state.update!(
             current_pv: snapshot.pv_max,
             current_pm: snapshot.pm_max,
             available_actions_data: { "standard" => 1, "movement" => 1, "free" => 1, "full" => 1, "reaction" => 1 }
           )
-
-          persist(state)
+          Success(state)
         end
       end
     end
