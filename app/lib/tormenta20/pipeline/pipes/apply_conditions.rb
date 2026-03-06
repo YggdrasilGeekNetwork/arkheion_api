@@ -67,7 +67,9 @@ module Tormenta20
 
             apply_attribute_penalties(context, effects_hash[:attributes], stacks)
             apply_defense_penalty(context, effects_hash[:defense], stacks)
-            apply_attack_penalty(context, effects_hash[:attack], stacks)
+            apply_attack_penalty(context, effects_hash[:attack], %i[melee_attack ranged_attack], stacks)
+            apply_attack_penalty(context, effects_hash[:attack_melee], %i[melee_attack], stacks)
+            apply_attack_penalty(context, effects_hash[:attack_ranged], %i[ranged_attack], stacks)
             apply_skill_penalties(context, effects_hash[:skills], stacks)
             apply_movement_penalty(context, effects_hash)
           end
@@ -98,13 +100,13 @@ module Tormenta20
           computed[:defesa][:total] += penalty * stacks
         end
 
-        def apply_attack_penalty(context, penalty, stacks)
+        def apply_attack_penalty(context, penalty, attack_types, stacks)
           return unless penalty
 
           computed = context[:computed_combat]
           return unless computed
 
-          %i[melee_attack ranged_attack].each do |attack_type|
+          attack_types.each do |attack_type|
             next unless computed[attack_type]
 
             computed[attack_type][:condition_penalty] ||= 0

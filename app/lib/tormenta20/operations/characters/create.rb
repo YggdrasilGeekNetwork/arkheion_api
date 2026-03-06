@@ -12,8 +12,9 @@ module Tormenta20
 
           step build_first_level_up(sheet, params)
 
-          snapshot_result = step generate_snapshot(sheet.reload)
-          snapshot = snapshot_result[:snapshot]
+          snapshot_result = Operations::Snapshots::Generate.new.call(character_sheet: sheet.reload, force: true)
+          return Failure[:snapshot_error, snapshot_result.failure] if snapshot_result.failure?
+          snapshot = snapshot_result.value![:snapshot]
 
           state = step initialize_state(sheet, snapshot)
           sheet.increment!(:character_version)
@@ -70,16 +71,6 @@ module Tormenta20
         def build_first_level_up(sheet, params)
           first_level = (params[:first_level] || {}).merge(level: 1)
           LevelUps::Create.new.call(character_sheet: sheet, params: first_level)
-        end
-
-        def generate_snapshot(sheet)
-          result = Operations::Snapshots::Generate.new.call(character_sheet: sheet, force: true)
-
-          if result.success?
-            result
-          else
-            Failure[:snapshot_error, result.failure]
-          end
         end
 
         def initialize_state(sheet, snapshot)
