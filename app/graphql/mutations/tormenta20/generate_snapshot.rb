@@ -15,7 +15,7 @@ module Mutations
 
         sheet = find_character_sheet!(character_sheet_id)
 
-        result = ::Tormenta20::Operations::Snapshots::Generate.new.call(
+        result = ::Tormenta20::Actions::Snapshots::Generate.call(
           character_sheet: sheet,
           force: force
         )

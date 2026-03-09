@@ -64,11 +64,51 @@ module Tormenta20
         { key: sheet.race_key, name: r&.name || sheet.race_key.humanize, size: r&.size, movement: r&.movement }
       end
 
+      def size               = race[:size]
+      def movement           = snapshot&.computed_resources&.dig("deslocamento", "total") || race[:movement] || 9
+      def proficiency_bonus  = (sheet.level_ups.count + 1) / 2
+      ATTR_DISPLAY = {
+        "forca"        => "Força",
+        "destreza"     => "Destreza",
+        "constituicao" => "Constituição",
+        "inteligencia" => "Inteligência",
+        "sabedoria"    => "Sabedoria",
+        "carisma"      => "Carisma"
+      }.freeze
+
+      def spell_save_dc          = snapshot&.computed_spells&.dig("save_dc", "total")
+      def spellcasting_attribute = snapshot&.computed_spells&.dig("spellcasting_attribute")
+      def spell_dc_notes
+        (snapshot&.computed_spells&.dig("save_dc", "conditional_bonuses") || []).map do |b|
+          "+#{b["value"]} #{b["condition"]} (#{b["label"]})"
+        end
+      end
+
+      def spell_dc_tooltip
+        save_dc = snapshot&.computed_spells&.dig("save_dc")
+        return nil unless save_dc
+
+        attr_display = ATTR_DISPLAY[spellcasting_attribute] || spellcasting_attribute&.humanize || "atributo"
+        base     = save_dc["base"] || 10
+        attr_mod = save_dc["attribute_modifier"] || 0
+        other    = save_dc["other_bonuses"] || []
+
+        parts = ["#{base} (base)"]
+        parts << "#{attr_mod >= 0 ? '+' : ''}#{attr_mod} (#{attr_display})"
+        other.each do |b|
+          v = b["value"]
+          parts << "#{v >= 0 ? '+' : ''}#{v} (#{b["label"]})"
+        end
+
+        parts.join(" ")
+      end
+
       # Computed from snapshot
       def attributes    = snapshot&.computed_attributes || {}
       def defenses      = snapshot&.computed_defenses || {}
       def skills        = snapshot&.computed_skills || {}
       def proficiencies = snapshot&.computed_proficiencies || {}
+      def senses        = snapshot&.computed_senses || []
       def abilities     = snapshot&.computed_abilities || []
       def spells        = snapshot&.computed_spells || {}
 

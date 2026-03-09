@@ -58,9 +58,41 @@ class ComputeSkillsTest < ActiveSupport::TestCase
     ctx = run_skills(sheet: s)
 
     other_bonuses = ctx[:computed_skills]["percepcao"][:other_bonuses]
-    race_bonus    = other_bonuses.find { |b| b[:source] == "race" }
+    race_bonus    = other_bonuses.find { |b| b[:label] == "Raça" }
     assert_not_nil race_bonus
     assert_equal 2, race_bonus[:value]
+  end
+
+  # ── Power bonuses to skills ───────────────────────────────────────────────
+
+  # investigador: skill_improvement investigacao +2 permanente
+  test "investigador adds +2 to investigacao (skill_improvement)" do
+    lu = level_up(abilities_chosen: { "class_abilities" => ["investigador"] })
+    ctx = run_skills(sheet: sheet, level_ups: [lu])
+
+    other_bonuses = ctx[:computed_skills]["investigacao"][:other_bonuses]
+    assert_equal 1, other_bonuses.size
+    assert_equal "Investigador", other_bonuses.first[:label]
+    assert_equal 2, other_bonuses.first[:value]
+  end
+
+  # investigador: add_attr_bonus_to_skill intuicao (INT modifier)
+  test "investigador adds INT modifier to intuicao (add_attr_bonus_to_skill)" do
+    s  = sheet(sheet_attributes: { "inteligencia" => 16 })  # INT mod = +3
+    lu = level_up(abilities_chosen: { "class_abilities" => ["investigador"] })
+    ctx = run_skills(sheet: s, level_ups: [lu])
+
+    other_bonuses = ctx[:computed_skills]["intuicao"][:other_bonuses]
+    bonus = other_bonuses.find { |b| b[:label] == "Investigador" }
+    assert_not_nil bonus
+    assert_equal 3, bonus[:value]
+  end
+
+  test "power skill bonus does not appear for other skills" do
+    lu = level_up(abilities_chosen: { "class_abilities" => ["investigador"] })
+    ctx = run_skills(sheet: sheet, level_ups: [lu])
+
+    assert_empty ctx[:computed_skills]["acrobacia"][:other_bonuses]
   end
 
   test "all 28 skills are computed" do

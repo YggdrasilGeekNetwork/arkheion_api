@@ -7,14 +7,15 @@ module Tormenta20
         Pipes::ComputeBaseAttributes,
         Pipes::ComputeSkills,
         Pipes::ComputeDefenses,
-        Pipes::ComputeResources,
         Pipes::ComputeCombat,
         Pipes::ComputeAbilities,
         Pipes::ComputeSpells,
         Pipes::ComputeProficiencies,
+        Pipes::ComputeSenses,
         Pipes::ApplyEquipmentModifiers,
         Pipes::ApplyConditions,
-        Pipes::ApplyActiveEffects
+        Pipes::ApplyActiveEffects,
+        Pipes::ComputeResources
       ].freeze
 
       def self.call(character_sheet, include_state: true)

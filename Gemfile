@@ -16,7 +16,8 @@ gem "dry-operation"
 gem "dry-validation"
 gem "jwt"
 
-gem "tormenta20", "~> 0.2.6"
+gem "tormenta20", path: "/home/luan/Arkheion/tormenta20"
+gem "minitest", "~> 5.0"
 
 group :development, :test do
   gem "dotenv-rails"

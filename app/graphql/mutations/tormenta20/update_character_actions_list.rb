@@ -12,7 +12,7 @@ module Mutations
       def resolve(id:, actions_list:)
         require_authentication!
 
-        result = ::Tormenta20::Operations::Characters::UpdateField.new.call(
+        result = ::Tormenta20::Actions::Characters::UpdateField.call(
           id: id,
           user: current_user,
           sheet_updates: { actions_list_data: actions_list.map(&:to_h) }

@@ -11,7 +11,7 @@ module Mutations
       def resolve(input:)
         require_authentication!
 
-        result = ::Tormenta20::Operations::Characters::Create.new.call(
+        result = ::Tormenta20::Actions::Characters::Create.call(
           params: input.to_h,
           user: current_user
         )

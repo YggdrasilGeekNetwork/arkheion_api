@@ -30,6 +30,37 @@ puts "  ✓ #{User.count} users"
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 
+def add_levels_to(user:, name:, levels:)
+  sheet = Tormenta20::CharacterSheet.find_by(user_id: user.id, name: name)
+  unless sheet
+    puts "  (skip) #{name} não encontrado"
+    return
+  end
+
+  levels_to_add = levels.drop([ sheet.current_level - 1, 0 ].max)
+  if levels_to_add.empty?
+    puts "  (skip) #{name} já está no nível #{sheet.current_level}"
+    return
+  end
+
+  levels_to_add.each do |params|
+    result = Tormenta20::Operations::LevelUps::Add.new.call(
+      character_sheet_id: sheet.id,
+      params: params,
+      user: user
+    )
+
+    result = result.success? ? result.value! : result
+    if result.success?
+      sheet = result.value![:character_sheet]
+      puts "  ✓ #{name} → nível #{sheet.current_level}"
+    else
+      puts "  ✗ Falha ao subir #{name}: #{result.failure.inspect}"
+      break
+    end
+  end
+end
+
 def create_character_with_choices(user:, params:)
   name = params[:name]
 
@@ -40,6 +71,7 @@ def create_character_with_choices(user:, params:)
 
   result = Tormenta20::Operations::Characters::Create.new.call(params: params, user: user)
 
+  result = result.success? ? result.value! : result
   if result.success?
     presenter = result.value![:character]
     puts "  ✓ #{presenter.name} (#{presenter.classes.map { |c| "#{c[:name]} #{c[:level]}" }.join(", ")})" \
@@ -122,7 +154,7 @@ create_character_with_choices(
     image_url:  nil,
     race_key:   "humano",
     race_choices: { "chosen_abilities" => [] },
-    origin_key:   "academico",
+    origin_key:   "estudioso",
     origin_choices: {
       "chosen_skills" => ["misticismo", "conhecimento"],
       "chosen_powers" => []
@@ -144,6 +176,127 @@ create_character_with_choices(
       spells_chosen:    { "known_spells" => [] }
     }
   }
+)
+
+create_character_with_choices(
+  user: luan,
+  params: {
+    name:       "Seraphina Venmoor",
+    image_url:  nil,
+    race_key:   "elfo",
+    race_choices: { "chosen_abilities" => [] },
+    origin_key:   "estudioso",
+    origin_choices: {
+      "chosen_skills" => ["misticismo", "conhecimento"],
+      "chosen_powers" => []
+    },
+    deity_key: nil,
+    sheet_attributes: {
+      "forca"        => 8,
+      "destreza"     => 16,
+      "constituicao" => 10,
+      "inteligencia" => 20,
+      "sabedoria"    => 14,
+      "carisma"      => 12
+    },
+    first_level: {
+      class_key:    "arcanista",
+      skill_points: { "misticismo" => 2, "investigacao" => 1, "conhecimento" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen:    { "poder_de_arcanista" => ["magia_de_animal"] },
+      spells_chosen:    { "known_spells" => [] }
+    }
+  }
+)
+
+puts "Adicionando level ups..."
+
+add_levels_to(
+  user: luan,
+  name: "Thorin Escudo de Ferro",
+  levels: [
+    { class_key: "guerreiro", skill_points: { "luta" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_guerreiro" => ["vitalidade"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "guerreiro", skill_points: { "atletismo" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_guerreiro" => ["trespassar"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "guerreiro", skill_points: { "luta" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_guerreiro" => ["aumento_de_atributo"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "guerreiro", skill_points: {},
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_guerreiro" => ["ataque_poderoso"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "paladino", skill_points: { "religiao" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_paladino" => ["aura_de_coragem"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "paladino", skill_points: {},
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_paladino" => ["aumento_de_atributo"] },
+      spells_chosen: { "known_spells" => [] } }
+  ]
+)
+
+add_levels_to(
+  user: luan,
+  name: "Lyra Sombravento",
+  levels: [
+    { class_key: "ladino", skill_points: { "furtividade" => 1, "acrobacia" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_ladino" => ["assassinar"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "ladino", skill_points: { "ladinagem" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_ladino" => ["emboscar"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "ladino", skill_points: { "furtividade" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_ladino" => ["aumento_de_atributo"] },
+      spells_chosen: { "known_spells" => [] } }
+  ]
+)
+
+add_levels_to(
+  user: player,
+  name: "Alaric Flamejante",
+  levels: [
+    { class_key: "arcanista", skill_points: { "misticismo" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_arcanista" => ["conhecimento_magico"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "arcanista", skill_points: { "conhecimento" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_arcanista" => ["aumento_de_atributo"] },
+      spells_chosen: { "known_spells" => [] } }
+  ]
+)
+
+add_levels_to(
+  user: luan,
+  name: "Seraphina Venmoor",
+  levels: [
+    { class_key: "arcanista", skill_points: { "misticismo" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_arcanista" => ["aumento_de_atributo"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "arcanista", skill_points: { "investigacao" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_arcanista" => ["conhecimento_magico"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "arcanista", skill_points: {},
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_arcanista" => ["mago_de_batalha"] },
+      spells_chosen: { "known_spells" => [] } },
+    { class_key: "arcanista", skill_points: { "misticismo" => 1 },
+      abilities_chosen: { "class_abilities" => [] },
+      powers_chosen: { "poder_de_arcanista" => ["aumento_de_atributo"] },
+      spells_chosen: { "known_spells" => [] } }
+  ]
 )
 
 puts "\n  ✓ #{Tormenta20::CharacterSheet.count} personagens no total"

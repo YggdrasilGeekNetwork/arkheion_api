@@ -23,7 +23,8 @@ module Tormenta20
         private
 
         def get_snapshot(sheet)
-          result = Snapshots::Generate.new.call(character_sheet: sheet)
+          outer = Snapshots::Generate.new.call(character_sheet: sheet)
+          result = outer.success? ? outer.value! : outer
 
           if result.success?
             Success(result.value![:snapshot])

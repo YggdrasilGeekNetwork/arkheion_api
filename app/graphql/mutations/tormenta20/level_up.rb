@@ -13,7 +13,7 @@ module Mutations
       def resolve(character_sheet_id:, input:)
         require_authentication!
 
-        result = ::Tormenta20::Operations::LevelUps::Add.new.call(
+        result = ::Tormenta20::Actions::LevelUps::Add.call(
           character_sheet_id: character_sheet_id,
           params: input.to_h,
           user: current_user

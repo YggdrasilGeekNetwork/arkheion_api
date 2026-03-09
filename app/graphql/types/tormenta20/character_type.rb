@@ -53,6 +53,17 @@ module Types
       field :other_bonuses,      [FrontendBonusEntryType], null: true
     end
 
+    class FrontendSenseType < Types::BaseObject
+      field :name,    String, null: false
+      field :value,   String, null: false
+      field :tooltip, String, null: true
+    end
+
+    class FrontendProficiencyType < Types::BaseObject
+      field :name,     String, null: false
+      field :tooltip,  String, null: true
+    end
+
     class FrontendAvailableActionsType < Types::BaseObject
       field :standard, Integer, null: false
       field :movement, Integer, null: false
@@ -246,6 +257,23 @@ module Types
       field :to, Integer, null: false
     end
 
+    # ─── Class abilities for level-up ─────────────────────────────────────────
+
+    class AvailablePowerType < Types::BaseObject
+      field :id,          ID,      null: false
+      field :name,        String,  null: false
+      field :description, String,  null: false
+      field :type,        String,  null: false
+      field :cost,        FrontendActionCostType, null: true
+      field :source,      String,  null: true
+    end
+
+    class ClassLevelAbilitiesType < Types::BaseObject
+      field :power_choices,      Integer,             null: false
+      field :fixed_abilities,    [String],            null: false
+      field :selectable_powers,  [AvailablePowerType], null: false
+    end
+
     # ─── Main CharacterType ───────────────────────────────────────────────────
 
     class CharacterType < Types::BaseObject
@@ -264,6 +292,13 @@ module Types
       field :max_health, Integer, null: false
       field :mana,       Integer, null: false
       field :max_mana,   Integer, null: false
+      field :size,                   String,  null: true
+      field :movement,               Integer, null: true
+      field :proficiency_bonus,      Integer, null: false
+      field :spell_save_dc,          Integer,  null: true
+      field :spellcasting_attribute, String,   null: true
+      field :spell_dc_notes,         [String], null: false
+      field :spell_dc_tooltip,       String,   null: true
 
       # Attributes & Defenses
       field :attributes,  [FrontendAttributeType],  null: false
@@ -278,6 +313,10 @@ module Types
       field :available_actions,  FrontendAvailableActionsType, null: false
       field :actions_list,       [FrontendCombatActionType],   null: false
       field :weapons,            [FrontendWeaponAttackType],   null: false
+
+      # Senses & Proficiencies
+      field :senses,        [FrontendSenseType],        null: false
+      field :proficiencies, [FrontendProficiencyType],  null: false
 
       # Skills & Abilities
       field :skills,    [FrontendSkillType],   null: false
@@ -324,9 +363,21 @@ module Types
       def max_health  = object.max_health
       def mana        = object.mana
       def max_mana    = object.max_mana
+      def size              = object.size
+      def movement          = object.movement
+      def proficiency_bonus      = object.proficiency_bonus
+      def spell_save_dc          = object.spell_save_dc
+      def spellcasting_attribute = object.spellcasting_attribute
+      def spell_dc_notes         = object.spell_dc_notes
+      def spell_dc_tooltip       = object.spell_dc_tooltip
+
+      ATTRIBUTE_ORDER = %w[forca destreza constituicao sabedoria inteligencia carisma].freeze
 
       def attributes
-        object.attributes.map do |key, data|
+        attrs = object.attributes
+        ATTRIBUTE_ORDER.filter_map do |key|
+          data = attrs[key] || attrs[key.to_sym]
+          next unless data
           {
             label: key,
             value: data["total"] || data[:total] || 10,
@@ -337,17 +388,27 @@ module Types
       end
 
 
+      def senses
+        object.senses.map do |s|
+          { name: s["name"] || s[:name], value: s["value"] || s[:value], tooltip: s["tooltip"] || s[:tooltip] }
+        end
+      end
+
+      def proficiencies
+        format_proficiencies(object.proficiencies)
+      end
+
       def defenses
         defesa = object.defenses["defesa"] || {}
-        return [] unless defesa.is_a?(Hash)
-        [{ name: "Defesa", value: defesa["total"] || defesa[:total] || 0, tooltip: "" }]
+        total = defesa["total"] || defesa[:total] || 10
+        [{ name: "Defesa", value: total, tooltip: format_defense_tooltip(defesa) }]
       end
 
       def resistances
         all = object.defenses
         %w[fortitude reflexos vontade].map do |key|
           data = all[key] || {}
-          { name: key.capitalize, value: data["total"] || data[:total] || 0, tooltip: "", visible: true }
+          { name: key.capitalize, value: data["total"] || data[:total] || 0, tooltip: format_save_tooltip(data), visible: true }
         end
       end
 
@@ -358,20 +419,32 @@ module Types
             modifier: data["total"] || data[:total] || 0,
             trained: data["trained"] || data[:trained] || false,
             attribute: data["attribute"] || data[:attribute] || "",
+            level_bonus: data["level_bonus"] || data[:level_bonus] || 0,
             training_bonus: data["training_bonus"] || data[:training_bonus] || 0,
-            other_bonuses: []
+            other_bonuses: (data["other_bonuses"] || data[:other_bonuses] || []).map do |b|
+              { label: b["label"] || b[:label] || "", value: b["value"] || b[:value] || 0 }
+            end,
+            tooltip: format_skill_tooltip(data),
+            visible_in_combat: SKILLS_VISIBLE_IN_COMBAT.include?(key),
+            visible_in_summary: SKILLS_VISIBLE_IN_SUMMARY.include?(key)
           }
         end
       end
 
       def abilities
         object.abilities.map do |a|
+          raw_costs = a["costs"] || a[:costs] || []
           {
             id: a[:ability_key] || a["ability_key"],
             name: a[:name] || a["name"] || "",
             description: a[:description] || a["description"] || "",
             type: (a[:type] || a["type"] || "").to_s,
-            source: a[:source] || a["source"]
+            source: a[:source] || a["source"],
+            action_type: nil,
+            cost: extract_ability_cost(raw_costs),
+            uses_per_day: nil,
+            is_favorite: nil,
+            favorite_order: nil
           }
         end
       end
@@ -385,10 +458,21 @@ module Types
             circle: s[:circle] || s["circle"] || 1,
             school: s[:school] || s["school"] || "",
             execution: s[:execution] || s["execution"] || "",
+            execution_details: s[:execution_details] || s["execution_details"],
             range: s[:range] || s["range"] || "",
+            target: format_spell_target(s),
+            area_effect: s[:area_effect] || s["area_effect"],
+            area_effect_details: s[:area_effect_details] || s["area_effect_details"],
+            counterspell: s[:counterspell] || s["counterspell"],
             duration: s[:duration] || s["duration"] || "",
+            duration_details: s[:duration_details] || s["duration_details"],
+            resistance: format_spell_resistance(s),
+            extra_costs: format_spell_extra_costs(s),
             description: s[:description] || s["description"] || "",
-            enhancements: s[:enhancements] || s["enhancements"] || []
+            enhancements: format_spell_enhancements(s[:enhancements] || s["enhancements"] || []),
+            effects: format_spell_effects(s[:effects] || s["effects"] || []),
+            is_favorite: nil,
+            favorite_order: nil
           }
         end
       end
@@ -403,8 +487,11 @@ module Types
             attack_bonus: w[:attack_bonus] || w["attack_bonus"] || 0,
             attack_attribute: w[:attack_attribute] || w["attack_attribute"],
             crit_range: w[:crit_range] || w["crit_range"],
+            crit_multiplier: w[:crit_multiplier] || w["crit_multiplier"],
             range: w[:range] || w["range"],
             action_type: w[:action_type] || w["action_type"] || "standard",
+            is_favorite: nil,
+            favorite_order: nil,
             equipment_id: w[:equipment_id] || w["equipment_id"]
           }
         end
@@ -458,6 +545,137 @@ module Types
       end
 
       private
+
+      SKILLS_VISIBLE_IN_COMBAT = %w[
+        iniciativa luta pontaria acrobacia atletismo
+        furtividade percepcao intimidacao
+      ].freeze
+
+      SKILLS_VISIBLE_IN_SUMMARY = %w[
+        iniciativa luta pontaria acrobacia atletismo furtividade
+        percepcao diplomacia enganacao intimidacao misticismo
+      ].freeze
+
+      ATTR_ABBR = {
+        "forca"        => "FOR",
+        "destreza"     => "DES",
+        "constituicao" => "CON",
+        "inteligencia" => "INT",
+        "sabedoria"    => "SAB",
+        "carisma"      => "CAR"
+      }.freeze
+
+      SAVE_ATTR_LABEL = {
+        "constituicao" => "CON",
+        "destreza"     => "DES",
+        "sabedoria"    => "SAB"
+      }.freeze
+
+      def format_skill_tooltip(data)
+        parts = []
+
+        attr = data["attribute"] || data[:attribute]
+        attr_mod = data["attribute_modifier"] || data[:attribute_modifier] || 0
+        attr_label = ATTR_ABBR[attr] || attr&.upcase || ""
+        parts << "#{attr_label} (#{sign(attr_mod)})" if attr_label.present?
+
+        ranks = data["level_bonus"] || data[:level_bonus] || 0
+        parts << "Nível (#{sign(ranks)})" if ranks != 0
+
+        training = data["training_bonus"] || data[:training_bonus] || 0
+        parts << "Treinado (#{sign(training)})" if training != 0
+
+        (data["other_bonuses"] || data[:other_bonuses] || []).each do |b|
+          val = b["value"] || b[:value] || 0
+          lbl = b["label"] || b[:label] || ""
+          parts << "#{lbl} (#{sign(val)})" if val != 0
+        end
+
+        parts.join(" + ")
+      end
+
+      PROFICIENCY_LABELS = {
+        # weapons
+        "simples"           => "Armas Simples",
+        "marciais"          => "Armas Marciais",
+        "armas_simples"     => "Armas Simples",
+        "armas_marciais"    => "Armas Marciais",
+        # armors
+        "leves"             => "Armaduras Leves",
+        "médias"            => "Armaduras Médias",
+        "pesadas"           => "Armaduras Pesadas",
+        "armaduras_leves"   => "Armaduras Leves",
+        "armaduras_medias"  => "Armaduras Médias",
+        "armaduras_pesadas" => "Armaduras Pesadas",
+        # shields / tools
+        "escudos"           => "Escudos"
+      }.freeze
+
+      def format_proficiencies(data)
+        return [] if data.blank?
+
+        entries = []
+
+        (data["weapons"] || data[:weapons] || []).each do |k|
+          entries << { name: PROFICIENCY_LABELS[k] || k.humanize, tooltip: nil }
+        end
+        (data["armors"] || data[:armors] || []).each do |k|
+          entries << { name: PROFICIENCY_LABELS[k] || k.humanize, tooltip: nil }
+        end
+        (data["shields"] || data[:shields] || []).each do |k|
+          entries << { name: PROFICIENCY_LABELS[k] || k.humanize, tooltip: nil }
+        end
+        (data["tools"] || data[:tools] || []).each do |k|
+          entries << { name: k.humanize, tooltip: nil }
+        end
+        (data["exotic_weapons"] || data[:exotic_weapons] || []).each do |k|
+          entries << { name: k.humanize, tooltip: "Arma exótica" }
+        end
+
+        entries
+      end
+
+      def format_defense_tooltip(data)
+        parts = ["Base 10"]
+
+        dex = data["dexterity_bonus"] || data[:dexterity_bonus] || 0
+        parts << "DES (#{sign(dex)})" if dex != 0
+
+        armor = data["armor_bonus"] || data[:armor_bonus] || 0
+        parts << "Armadura (#{sign(armor)})" if armor != 0
+
+        shield = data["shield_bonus"] || data[:shield_bonus] || 0
+        parts << "Escudo (#{sign(shield)})" if shield != 0
+
+        (data["other_bonuses"] || data[:other_bonuses] || []).each do |b|
+          val = b["value"] || b[:value] || 0
+          lbl = b["label"] || b[:label] || ""
+          parts << "#{lbl} (#{sign(val)})" if val != 0
+        end
+
+        parts.join(" + ")
+      end
+
+      def format_save_tooltip(data)
+        parts = []
+
+        attr = data["attribute"] || data[:attribute]
+        attr_bonus = data["attribute_bonus"] || data[:attribute_bonus] || 0
+        attr_label = SAVE_ATTR_LABEL[attr] || attr&.upcase || ""
+        parts << "#{attr_label} (#{sign(attr_bonus)})" if attr_label.present?
+
+        (data["other_bonuses"] || data[:other_bonuses] || []).each do |b|
+          val = b["value"] || b[:value] || 0
+          lbl = b["label"] || b[:label] || ""
+          parts << "#{lbl} (#{sign(val)})" if val != 0
+        end
+
+        parts.join(" + ")
+      end
+
+      def sign(val)
+        val >= 0 ? "+#{val}" : val.to_s
+      end
 
       def weapon_actions
         object.weapons.map do |w|
@@ -517,6 +735,19 @@ module Types
           effects.key?(:cost)
       end
 
+      # Converts a `costs` array (from gem JSON) into { pm:, pv: }
+      # Example: [{ "value" => 2, "type" => "PM" }] → { pm: 2 }
+      def extract_ability_cost(costs)
+        return nil unless costs.is_a?(Array) && costs.any?
+
+        pm = costs.find { |c| (c["type"] || c[:type]).to_s.upcase == "PM" }&.then { |c| c["value"] || c[:value] }
+        pv = costs.find { |c| (c["type"] || c[:type]).to_s.upcase == "PV" }&.then { |c| c["value"] || c[:value] }
+
+        return nil if pm.nil? && pv.nil?
+
+        { pm: pm.is_a?(Integer) ? pm : nil, pv: pv.is_a?(Integer) ? pv : nil }
+      end
+
       def extract_cost(effects)
         return nil unless effects.is_a?(Hash)
         cost_str = (effects["cost"] || effects[:cost]).to_s
@@ -527,6 +758,73 @@ module Types
         elsif cost_str =~ /(\d+)\s*PV/i
           { pv: $1.to_i }
         end
+      end
+
+      def format_spell_target(s)
+        type = s[:target_type] || s["target_type"]
+        return nil unless type.present?
+
+        {
+          type: type,
+          amount: s[:target_amount] || s["target_amount"],
+          up_to: s[:target_up_to] || s["target_up_to"]
+        }
+      end
+
+      def format_spell_resistance(s)
+        skill  = s[:resistence_skill]  || s["resistence_skill"]
+        effect = s[:resistence_effect] || s["resistence_effect"]
+        return nil unless skill.present? || effect.present?
+
+        [skill, effect].compact.join(" — ")
+      end
+
+      def format_spell_extra_costs(s)
+        parts = []
+        mat = s[:extra_costs_material_component] || s["extra_costs_material_component"]
+        cost = s[:extra_costs_material_cost] || s["extra_costs_material_cost"]
+        debuff = s[:extra_costs_pm_debuff] || s["extra_costs_pm_debuff"]
+        sacrifice = s[:extra_costs_pm_sacrifice] || s["extra_costs_pm_sacrifice"]
+
+        parts << "Componente material: #{mat}#{cost.present? ? " (#{cost})" : ""}" if mat.present?
+        parts << "PM (debuff): #{debuff}" if debuff.present?
+        parts << "PM (sacrifício): #{sacrifice}" if sacrifice.present?
+        parts.empty? ? nil : parts.join("; ")
+      end
+
+      def format_spell_effects(raw_effects)
+        return [] unless raw_effects.is_a?(Array)
+
+        raw_effects.map do |e|
+          next nil unless e.is_a?(Hash)
+          {
+            type: e["type"] || e[:type] || "",
+            attribute: e["attribute"] || e[:attribute],
+            amount: (e["amount"] || e[:amount])&.to_s,
+            resistance_requirement: e["resistance_requirement"] || e[:resistance_requirement],
+            extra_requirements: e["extra_requirements"] || e[:extra_requirements]
+          }
+        end.compact
+      end
+
+      def format_spell_enhancements(raw_enhancements)
+        return [] unless raw_enhancements.is_a?(Array)
+
+        raw_enhancements.map do |e|
+          next nil unless e.is_a?(Hash)
+          extra = e["extra_details"] || e[:extra_details]
+          {
+            cost: (e["cost"] || e[:cost]).to_i,
+            type: (e["type"] || e[:type] || "").to_s,
+            description: (e["description"] || e[:description] || "").to_s,
+            extra_details: extra.is_a?(Hash) ? {
+              execution: extra["execution"] || extra[:execution],
+              duration: extra["duration"] || extra[:duration],
+              circle: extra["circle"] || extra[:circle],
+              effects: format_spell_effects(extra["effects"] || extra[:effects] || [])
+            } : nil
+          }
+        end.compact
       end
 
       def format_item(item)

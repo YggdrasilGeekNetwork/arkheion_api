@@ -89,23 +89,6 @@ module Tormenta20
           bonuses
         end
 
-        def collect_all_power_keys(context)
-          keys = []
-
-          context.level_ups.each do |level_up|
-            keys.concat(level_up.abilities_chosen["class_abilities"] || [])
-            keys.concat(level_up.abilities_chosen["bonus_abilities"] || [])
-            level_up.powers_chosen.each_value { |v| keys.concat(v || []) }
-          end
-
-          race = race_definition(context.character_sheet.race_key)
-          keys.concat(race&.racial_abilities || [])
-          keys.concat(context.character_sheet.race_choices["chosen_abilities"] || [])
-          keys.concat(context.character_sheet.origin_choices["chosen_powers"] || [])
-
-          keys.uniq
-        end
-
         def passive_effect?(effect)
           d = effect["duration"].to_s
           d.empty? || d.start_with?("permanente")

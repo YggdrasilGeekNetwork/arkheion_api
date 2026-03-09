@@ -4,6 +4,11 @@ module Tormenta20
   module Pipeline
     module Pipes
       class ComputeResources < BasePipe
+        ATTR_MAP = {
+          "for" => "forca", "des" => "destreza", "con" => "constituicao",
+          "int" => "inteligencia", "sab" => "sabedoria", "car" => "carisma"
+        }.freeze
+
         def call(context)
           computed_attributes = context[:computed_attributes]
 
@@ -22,7 +27,7 @@ module Tormenta20
           con_mod = computed_attributes.dig("constituicao", :modifier) || 0
 
           base = 0
-          other_bonuses = []
+          other_bonuses = collect_pv_bonuses(context, computed_attributes)
 
           context.level_ups.each do |level_up|
             classe = class_definition(level_up.class_key)
@@ -46,7 +51,7 @@ module Tormenta20
         def compute_pm(context, computed_attributes)
           base = 0
           attr_bonus = 0
-          other_bonuses = []
+          other_bonuses = collect_pm_bonuses(context, computed_attributes)
 
           context.level_ups.each do |level_up|
             classe = class_definition(level_up.class_key)
@@ -65,6 +70,81 @@ module Tormenta20
             other_bonuses: other_bonuses,
             max: [total, 0].max
           }
+        end
+
+        def collect_pv_bonuses(context, computed_attributes)
+          bonuses = []
+          total_level = context.level_ups.size
+
+          collect_all_power_keys(context).each do |power_key|
+            poder = power_definition(power_key)
+            next unless poder
+
+            effects = poder.effects
+            next unless effects.is_a?(Array)
+
+            effects.each do |effect|
+              next unless effect.is_a?(Hash)
+
+              case effect["type"]
+              when "PV_improvement"
+                value = effect["value"]
+                next unless value.is_a?(Integer)
+
+                if effect["extra_details"] == "por_nivel_do_personagem"
+                  bonuses << { label: poder.name, value: value * total_level }
+                else
+                  d = effect["duration"].to_s
+                  next if d.present? && !d.start_with?("permanente")
+                  bonuses << { label: poder.name, value: value }
+                end
+              when "add_PV_attr"
+                attr_full = ATTR_MAP[effect["attr"]]
+                next unless attr_full
+
+                modifier = computed_attributes.dig(attr_full, :modifier) || 0
+                bonuses << { label: poder.name, value: modifier } if modifier != 0
+              end
+            end
+          end
+
+          bonuses
+        end
+
+        def collect_pm_bonuses(context, computed_attributes)
+          bonuses = []
+
+          collect_all_power_keys(context).each do |power_key|
+            poder = power_definition(power_key)
+            next unless poder
+
+            effects = poder.effects
+            next unless effects.is_a?(Array)
+
+            effects.each do |effect|
+              next unless effect.is_a?(Hash)
+
+              case effect["type"]
+              when "PM_improvement", "pm_improvement", "PM_improvemente"
+                value = effect["value"]
+                next unless value.is_a?(Integer)
+
+                d = (effect["duration"] || effect["duraction"]).to_s
+                next if d.present? && !d.start_with?("permanente")
+                next if effect["requirement"].present? || effect["requirements"].present?
+
+                bonuses << { label: poder.name, value: value }
+              when "add_attr_PM", "PM_bonus_attr"
+                attr_full = ATTR_MAP[effect["attr"]]
+                next unless attr_full
+
+                modifier = computed_attributes.dig(attr_full, :modifier) || 0
+                bonuses << { label: poder.name, value: modifier } if modifier != 0
+              end
+            end
+          end
+
+          bonuses
         end
 
         def compute_movement(context)

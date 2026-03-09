@@ -28,6 +28,9 @@ module Types
     # Tormenta20 rulebook — proxy to gem data (DM screen quick reference)
     field :rulebook, resolver: Queries::Tormenta20::RulebookQuery
 
+    # Level-up helper — class powers available at a given level
+    field :class_powers_for_level, resolver: Queries::Tormenta20::ClassPowersForLevelQuery
+
     # Tormenta20 queries — internal / system
     field :character_sheet, resolver: Queries::Tormenta20::CharacterSheetQuery
     field :character_sheets, resolver: Queries::Tormenta20::CharacterSheetsQuery

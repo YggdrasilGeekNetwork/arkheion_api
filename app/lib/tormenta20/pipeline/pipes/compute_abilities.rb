@@ -89,7 +89,8 @@ module Tormenta20
             ability_key: key,
             name: poder&.name || key.humanize,
             description: poder&.description,
-            effects: poder&.effects || {},
+            effects: poder&.effects || [],
+            costs: poder&.costs || [],
             source: source,
             type: type
           }

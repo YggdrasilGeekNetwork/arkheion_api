@@ -43,6 +43,7 @@ module Tormenta20
             computed_abilities: context[:computed_abilities],
             computed_spells: context[:computed_spells],
             computed_proficiencies: context[:computed_proficiencies],
+            computed_senses: context[:computed_senses],
             full_snapshot: context.to_h
           )
 

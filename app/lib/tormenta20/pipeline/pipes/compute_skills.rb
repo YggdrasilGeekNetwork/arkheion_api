@@ -4,6 +4,11 @@ module Tormenta20
   module Pipeline
     module Pipes
       class ComputeSkills < BasePipe
+        ATTR_MAP = {
+          "for" => "forca", "des" => "destreza", "con" => "constituicao",
+          "int" => "inteligencia", "sab" => "sabedoria", "car" => "carisma"
+        }.freeze
+
         SKILLS = {
           'acrobacia' => 'destreza',
           'adestramento' => 'carisma',
@@ -53,6 +58,7 @@ module Tormenta20
 
             computed_skills[skill] = {
               ranks: ranks,
+              level_bonus: ranks,
               attribute: attribute,
               attribute_modifier: attr_modifier,
               trained: trained,
@@ -88,10 +94,47 @@ module Tormenta20
           bonuses = []
 
           # Race bonuses to skills
-          race_skills = context.character_sheet.race_choices['chosen_skills'] || []
-          bonuses << { source: 'race', value: 2 } if race_skills.include?(skill)
+          race_skills = context.character_sheet.race_choices["chosen_skills"] || []
+          bonuses << { label: "Raça", value: 2 } if race_skills.include?(skill)
 
-          # Would collect from powers, items, effects, etc.
+          # Power bonuses to skills
+          computed_attributes = context[:computed_attributes]
+
+          collect_all_power_keys(context).each do |power_key|
+            poder = power_definition(power_key)
+            next unless poder
+
+            effects = poder.effects
+            next unless effects.is_a?(Array)
+
+            effects.each do |effect|
+              next unless effect.is_a?(Hash)
+
+              case effect["type"]
+              when "skill_improvement", "expertise_improvement"
+                target = effect["skill"] || effect["expertise"]
+                next unless target == skill
+
+                value = effect["value"]
+                next unless value.is_a?(Integer)
+
+                d = effect["duration"].to_s
+                next if d.present? && !d.start_with?("permanente")
+                next if effect["requirement"].present? || effect["requirements"].present?
+
+                bonuses << { label: poder.name, value: value }
+              when "add_attr_bonus_to_skill"
+                target = effect["skill"]
+                next unless target == skill
+
+                attr_full = ATTR_MAP[effect["attr"]]
+                next unless attr_full
+
+                modifier = computed_attributes&.dig(attr_full, :modifier) || 0
+                bonuses << { label: poder.name, value: modifier } if modifier != 0
+              end
+            end
+          end
 
           bonuses
         end

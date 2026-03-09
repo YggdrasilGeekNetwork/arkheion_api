@@ -17,7 +17,7 @@ module Tormenta20
 
           Success(
             character_sheet: sheet.reload,
-            level_up: result[:level_up]
+            level_up: result.value![:level_up]
           )
         end
 
@@ -36,7 +36,8 @@ module Tormenta20
         end
 
         def update_resources_after_level_up(sheet)
-          snapshot_result = Snapshots::Generate.new.call(character_sheet: sheet)
+          outer = Snapshots::Generate.new.call(character_sheet: sheet)
+          snapshot_result = outer.success? ? outer.value! : outer
           return snapshot_result if snapshot_result.failure?
 
           snapshot = snapshot_result.value![:snapshot]

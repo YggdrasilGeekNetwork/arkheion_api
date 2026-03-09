@@ -11,7 +11,7 @@ module Mutations
       def resolve(id:)
         require_authentication!
 
-        result = ::Tormenta20::Operations::Characters::Delete.new.call(
+        result = ::Tormenta20::Actions::Characters::Delete.call(
           id: id,
           user: current_user
         )

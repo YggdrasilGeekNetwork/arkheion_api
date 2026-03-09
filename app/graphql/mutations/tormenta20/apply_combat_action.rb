@@ -18,24 +18,10 @@ module Mutations
         require_authentication!
 
         sheet = find_character_sheet!(character_sheet_id)
-
-        result = case input[:action_type].to_sym
-                 when :damage
-                   ::Tormenta20::Operations::CharacterState::ApplyDamage.new.call(
-                     character_sheet: sheet,
-                     amount: input[:amount].to_i,
-                     damage_type: input[:damage_type],
-                     source: input[:source]
-                   )
-                 when :heal
-                   ::Tormenta20::Operations::CharacterState::ApplyHealing.new.call(
-                     character_sheet: sheet,
-                     amount: input[:amount].to_i,
-                     source: input[:source]
-                   )
-                 else
-                   raise GraphQL::ExecutionError, "Unknown action type: #{input[:action_type]}"
-                 end
+        result = ::Tormenta20::Actions::CharacterState::ApplyCombatAction.call(
+          character_sheet: sheet,
+          input: input
+        )
 
         handle_result(result)
       end
