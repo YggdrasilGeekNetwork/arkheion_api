@@ -54,9 +54,10 @@ module Types
     end
 
     class FrontendSenseType < Types::BaseObject
-      field :name,    String, null: false
-      field :value,   String, null: false
-      field :tooltip, String, null: true
+      field :name,    String,  null: false
+      field :value,   String,  null: false
+      field :tooltip, String,  null: true
+      field :visible, Boolean, null: false
     end
 
     class FrontendProficiencyType < Types::BaseObject
@@ -293,7 +294,9 @@ module Types
       field :mana,       Integer, null: false
       field :max_mana,   Integer, null: false
       field :size,                   String,  null: true
+      field :size_tooltip,           String,  null: true
       field :movement,               Integer, null: true
+      field :movement_tooltip,       String,  null: true
       field :proficiency_bonus,      Integer, null: false
       field :spell_save_dc,          Integer,  null: true
       field :spellcasting_attribute, String,   null: true
@@ -364,7 +367,9 @@ module Types
       def mana        = object.mana
       def max_mana    = object.max_mana
       def size              = object.size
+      def size_tooltip      = object.size_tooltip
       def movement          = object.movement
+      def movement_tooltip  = object.movement_tooltip
       def proficiency_bonus      = object.proficiency_bonus
       def spell_save_dc          = object.spell_save_dc
       def spellcasting_attribute = object.spellcasting_attribute
@@ -389,8 +394,11 @@ module Types
 
 
       def senses
+        hidden = object.sheet.hidden_senses || []
         object.senses.map do |s|
-          { name: s["name"] || s[:name], value: s["value"] || s[:value], tooltip: s["tooltip"] || s[:tooltip] }
+          name = s["name"] || s[:name]
+          { name: name, value: s["value"] || s[:value], tooltip: s["tooltip"] || s[:tooltip],
+            visible: !hidden.include?(name) }
         end
       end
 

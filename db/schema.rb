@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_09_133148) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_09_151535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -30,6 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_133148) do
     t.datetime "updated_at", null: false
     t.string "image_url"
     t.integer "character_version", default: 0, null: false
+    t.jsonb "hidden_senses", default: [], null: false
     t.index ["name"], name: "index_tormenta20_character_sheets_on_name"
     t.index ["race_key"], name: "index_tormenta20_character_sheets_on_race_key"
     t.index ["user_id", "campaign_id"], name: "index_tormenta20_character_sheets_on_user_id_and_campaign_id"

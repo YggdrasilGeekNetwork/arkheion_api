@@ -15,6 +15,7 @@ module Types
     field :level_up_character,                  mutation: Mutations::Tormenta20::LevelUpCharacter
     field :update_character_health,             mutation: Mutations::Tormenta20::UpdateCharacterHealth
     field :update_character_mana,               mutation: Mutations::Tormenta20::UpdateCharacterMana
+    field :update_character_hidden_senses,      mutation: Mutations::Tormenta20::UpdateCharacterHiddenSenses
     field :update_character_attributes,         mutation: Mutations::Tormenta20::UpdateCharacterAttributes
     field :update_character_resistances,        mutation: Mutations::Tormenta20::UpdateCharacterResistances
     field :update_character_defenses,           mutation: Mutations::Tormenta20::UpdateCharacterDefenses

@@ -66,6 +66,31 @@ module Tormenta20
 
       def size               = race[:size]
       def movement           = snapshot&.computed_resources&.dig("deslocamento", "total") || race[:movement] || 9
+
+      def size_tooltip
+        s = race[:size]
+        return nil unless s
+        case s.downcase
+        when "minúsculo"        then "Tamanho Minúsculo: ocupa 0,75m, alcance 1,5m."
+        when "pequeno"          then "Tamanho Pequeno: ocupa 1,5m, alcance 1,5m."
+        when "médio", "medio"   then "Tamanho Médio: não confere bônus nem penalidades."
+        when "grande"           then "Tamanho Grande: ocupa 3m, alcance 3m."
+        when "enorme"           then "Tamanho Enorme: ocupa 4,5m, alcance 4,5m."
+        when "colossal"         then "Tamanho Colossal: ocupa 6m, alcance 4,5m."
+        else "Tamanho #{s}"
+        end
+      end
+
+      def movement_tooltip
+        desl = snapshot&.computed_resources&.dig("deslocamento")
+        return nil unless desl
+
+        base          = desl["base"] || 9
+        armor_penalty = desl["armor_penalty"] || 0
+        parts = ["#{base}m (base)"]
+        parts << "−#{armor_penalty}m (armadura)" if armor_penalty > 0
+        parts.join(" ")
+      end
       def proficiency_bonus  = (sheet.level_ups.count + 1) / 2
       ATTR_DISPLAY = {
         "forca"        => "Força",
