@@ -1,11 +1,3 @@
-PATH
-  remote: /home/luan/Arkheion/tormenta20
-  specs:
-    tormenta20 (0.2.8)
-      activerecord (~> 8.0)
-      activesupport (~> 8.0)
-      sqlite3 (~> 2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -321,6 +313,10 @@ GEM
     thruster (0.1.12-x86_64-darwin)
     thruster (0.1.12-x86_64-linux)
     timeout (0.6.0)
+    tormenta20 (0.2.8)
+      activerecord (~> 8.0)
+      activesupport (~> 8.0)
+      sqlite3 (~> 2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.1.4)
