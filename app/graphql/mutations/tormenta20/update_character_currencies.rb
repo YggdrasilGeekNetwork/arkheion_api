@@ -15,7 +15,7 @@ module Mutations
         result = ::Tormenta20::Actions::Characters::UpdateField.call(
           id: id,
           user: current_user,
-          state_updates: { currencies_data: currencies.to_h }
+          state_updates: { currency: { tc: currencies.tc, tp: currencies.tp, to: currencies.to } }
         )
 
         handle_result(result)

@@ -65,9 +65,9 @@ module Tormenta20
     end
 
     CurrencySchema = Dry::Schema.JSON do
-      optional(:tibares_ouro).filled(:integer, gteq?: 0)
-      optional(:tibares_prata).filled(:integer, gteq?: 0)
-      optional(:tibares_cobre).filled(:integer, gteq?: 0)
+      optional(:tc).filled(:integer, gteq?: 0)
+      optional(:tp).filled(:integer, gteq?: 0)
+      optional(:to).filled(:integer, gteq?: 0)
     end
 
     AbilityUsesSchema = Dry::Schema.JSON do
