@@ -366,7 +366,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   simplecov
   thruster
-  tormenta20!
+  tormenta20 (~> 0.2.8)
 
 BUNDLED WITH
    2.6.2
