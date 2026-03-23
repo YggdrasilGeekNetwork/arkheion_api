@@ -1,0 +1,3 @@
+superadmin:
+  email: admin@arkheion.test
+  encrypted_password: <%= Devise::Encryptor.digest(AdminUser, 'password123') %>

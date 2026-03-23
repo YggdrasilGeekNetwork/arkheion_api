@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :admin_users
+  ActiveAdmin.routes(self)
   post "/graphql", to: "graphql#execute"
   get  "/graphiql", to: "graphiql#show" if Rails.env.development? || ENV["ENABLE_GRAPHIQL"]
 

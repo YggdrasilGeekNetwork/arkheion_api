@@ -30,6 +30,9 @@ module Tormenta20
       def turn_order        = state&.turn_order || 0
       def available_actions = state&.available_actions_data || {}
 
+      # Notes
+      def notes = state&.notes || {}
+
       # Currency
       def currencies = state&.currency || {}
 

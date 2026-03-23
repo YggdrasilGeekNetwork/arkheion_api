@@ -17,12 +17,28 @@ module Mutations
           id: id,
           user: current_user,
           state_updates: {
-            equipped_items_display: equipped_items.to_h,
-            backpack_data: backpack.map(&:to_h)
+            equipped_items: {
+              "main_hand"   => slot_key(equipped_items[:right_hand]),
+              "off_hand"    => slot_key(equipped_items[:left_hand]),
+              "quick_draw1" => slot_key(equipped_items[:quick_draw1]),
+              "quick_draw2" => slot_key(equipped_items[:quick_draw2]),
+              "slot1"       => slot_key(equipped_items[:slot1]),
+              "slot2"       => slot_key(equipped_items[:slot2]),
+              "slot3"       => slot_key(equipped_items[:slot3]),
+              "slot4"       => slot_key(equipped_items[:slot4])
+            }.compact,
+            inventory: backpack.map { |item| { item_id: item[:id], item_key: item[:id], quantity: item[:quantity] || 1 } }
           }
         )
 
         handle_result(result)
+      end
+
+      private
+
+      def slot_key(item)
+        return nil unless item&.dig(:id).present?
+        { item_key: item[:id] }
       end
     end
   end

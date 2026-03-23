@@ -327,42 +327,15 @@ setup_equipment(
   user: luan,
   name: "Thorin Escudo de Ferro",
   equipped_items: {
-    "main_hand" => {
-      "item_id" => "espada_longa_thorin", "item_key" => "espada_longa",
-      "name" => "Espada Longa", "category" => "Marcial",
-      "description" => "Dano 1d8 (corte). Versátil (1d10 com duas mãos).",
-      "price" => "30 TO", "weight" => 2
-    },
-    "shield" => {
-      "item_id" => "escudo_leve_thorin", "item_key" => "escudo_leve",
-      "name" => "Escudo Leve", "category" => "Escudo",
-      "description" => "+1 na Defesa.",
-      "price" => "15 TO", "weight" => 2
-    },
-    "armor" => {
-      "item_id" => "cota_de_malha_thorin", "item_key" => "cota_de_malha",
-      "name" => "Cota de Malha", "category" => "Armadura Pesada",
-      "description" => "+6 na Defesa. Des máx +2. Penalidade de armadura -5.",
-      "price" => "400 TO", "weight" => 4
-    }
+    "main_hand" => { "item_key" => "espada_longa" },
+    "shield"    => { "item_key" => "escudo_leve" },
+    "armor"     => { "item_key" => "cota_de_malha" }
   },
   inventory: [
-    { "item_id" => "pocao_cura_thorin_1", "item_key" => "pocao_de_cura", "quantity" => 2,
-      "item" => { "id" => "pocao_de_cura", "name" => "Poção de Cura",
-                  "description" => "Recupera 2d6+2 PV ao beber.", "category" => "Consumível",
-                  "price" => "25 TO", "weight" => 1 } },
-    { "item_id" => "corda_thorin", "item_key" => "corda", "quantity" => 1,
-      "item" => { "id" => "corda", "name" => "Corda (15m)",
-                  "description" => "Corda de cânhamo resistente.", "category" => "Aventura",
-                  "price" => "1 TO", "weight" => 2 } },
-    { "item_id" => "racoes_thorin", "item_key" => "racao_de_viagem", "quantity" => 5,
-      "item" => { "id" => "racao_de_viagem", "name" => "Ração de Viagem",
-                  "description" => "Alimentação para um dia.", "category" => "Aventura",
-                  "price" => "5 TP", "weight" => 1 } },
-    { "item_id" => "tocha_thorin", "item_key" => "tocha", "quantity" => 5,
-      "item" => { "id" => "tocha", "name" => "Tocha",
-                  "description" => "Ilumina 9m por 1 hora.", "category" => "Aventura",
-                  "price" => "1 TC", "weight" => 1 } }
+    { "item_id" => "balsamo_restaurador", "item_key" => "balsamo_restaurador", "quantity" => 2 },
+    { "item_id" => "corda",               "item_key" => "corda",               "quantity" => 1 },
+    { "item_id" => "racao_de_viagem",     "item_key" => "racao_de_viagem",     "quantity" => 5 },
+    { "item_id" => "tocha",               "item_key" => "tocha",               "quantity" => 5 }
   ],
   currency: { "tc" => 15, "tp" => 20, "to" => 50 }
 )
@@ -371,40 +344,15 @@ setup_equipment(
   user: luan,
   name: "Lyra Sombravento",
   equipped_items: {
-    "main_hand" => {
-      "item_id" => "adaga_lyra_1", "item_key" => "adaga",
-      "name" => "Adaga", "category" => "Simples",
-      "description" => "Dano 1d4 (perfuração). Arremessável (alcance 6m).",
-      "price" => "2 TO", "weight" => 1
-    },
-    "off_hand" => {
-      "item_id" => "arco_curto_lyra", "item_key" => "arco_curto",
-      "name" => "Arco Curto", "category" => "Marcial",
-      "description" => "Dano 1d6 (perfuração). Alcance 30m. Munição: flechas.",
-      "price" => "35 TO", "weight" => 2
-    }
+    "main_hand" => { "item_key" => "adaga" },
+    "off_hand"  => { "item_key" => "arco_curto" }
   },
   inventory: [
-    { "item_id" => "flechas_lyra", "item_key" => "flechas", "quantity" => 20,
-      "item" => { "id" => "flechas", "name" => "Flechas (20)",
-                  "description" => "Munição para arco.", "category" => "Munição",
-                  "price" => "1 TO", "weight" => 1 } },
-    { "item_id" => "adaga_lyra_2", "item_key" => "adaga", "quantity" => 2,
-      "item" => { "id" => "adaga", "name" => "Adaga",
-                  "description" => "Dano 1d4 (perfuração). Arremessável.", "category" => "Simples",
-                  "price" => "2 TO", "weight" => 1 } },
-    { "item_id" => "ferramentas_ladrao_lyra", "item_key" => "ferramentas_de_ladrao", "quantity" => 1,
-      "item" => { "id" => "ferramentas_de_ladrao", "name" => "Ferramentas de Ladrão",
-                  "description" => "+2 em testes de Ladinagem com fechaduras.", "category" => "Ferramentas",
-                  "price" => "25 TO", "weight" => 1 } },
-    { "item_id" => "pocao_invisibilidade_lyra", "item_key" => "pocao_de_invisibilidade", "quantity" => 1,
-      "item" => { "id" => "pocao_de_invisibilidade", "name" => "Poção de Invisibilidade",
-                  "description" => "Torna invisível por 1 minuto.", "category" => "Consumível",
-                  "price" => "120 TO", "weight" => 1 } },
-    { "item_id" => "corda_lyra", "item_key" => "corda_de_seda", "quantity" => 1,
-      "item" => { "id" => "corda_de_seda", "name" => "Corda de Seda (15m)",
-                  "description" => "Leve e resistente.", "category" => "Aventura",
-                  "price" => "10 TO", "weight" => 1 } }
+    { "item_id" => "adaga",              "item_key" => "adaga",              "quantity" => 2 },
+    { "item_id" => "gazua",              "item_key" => "gazua",              "quantity" => 1 },
+    { "item_id" => "balsamo_restaurador", "item_key" => "balsamo_restaurador", "quantity" => 1 },
+    { "item_id" => "corda",              "item_key" => "corda",              "quantity" => 1 },
+    { "item_id" => "essencia_de_sombra", "item_key" => "essencia_de_sombra", "quantity" => 1 }
   ],
   currency: { "tc" => 5, "tp" => 10, "to" => 30 }
 )
@@ -413,30 +361,14 @@ setup_equipment(
   user: player,
   name: "Alaric Flamejante",
   equipped_items: {
-    "main_hand" => {
-      "item_id" => "cajado_alaric", "item_key" => "cajado",
-      "name" => "Cajado", "category" => "Simples",
-      "description" => "Dano 1d6 (impacto). Versátil (1d8).",
-      "price" => "5 TP", "weight" => 2
-    }
+    "main_hand" => { "item_key" => "bordao" },
+    "slot1"     => { "item_key" => "cajado_arcano" }
   },
   inventory: [
-    { "item_id" => "bolsa_componentes_alaric", "item_key" => "bolsa_de_componentes", "quantity" => 1,
-      "item" => { "id" => "bolsa_de_componentes", "name" => "Bolsa de Componentes",
-                  "description" => "Componentes materiais para conjuração de magias.", "category" => "Arcano",
-                  "price" => "25 TO", "weight" => 1 } },
-    { "item_id" => "livro_de_magias_alaric", "item_key" => "livro_de_magias", "quantity" => 1,
-      "item" => { "id" => "livro_de_magias", "name" => "Livro de Magias",
-                  "description" => "Contém as fórmulas de todas as magias conhecidas.", "category" => "Arcano",
-                  "price" => "50 TO", "weight" => 2 } },
-    { "item_id" => "pocao_cura_alaric", "item_key" => "pocao_de_cura", "quantity" => 1,
-      "item" => { "id" => "pocao_de_cura", "name" => "Poção de Cura",
-                  "description" => "Recupera 2d6+2 PV ao beber.", "category" => "Consumível",
-                  "price" => "25 TO", "weight" => 1 } },
-    { "item_id" => "pergaminho_alaric", "item_key" => "pergaminho_de_bola_de_fogo", "quantity" => 1,
-      "item" => { "id" => "pergaminho_de_bola_de_fogo", "name" => "Pergaminho: Bola de Fogo",
-                  "description" => "Conjura a magia Bola de Fogo uma única vez (círculo 3).", "category" => "Consumível",
-                  "price" => "90 TO", "weight" => 0 } }
+    { "item_id" => "tomo_hermetico",     "item_key" => "tomo_hermetico",     "quantity" => 1 },
+    { "item_id" => "balsamo_restaurador", "item_key" => "balsamo_restaurador", "quantity" => 1 },
+    { "item_id" => "essencia_de_mana",   "item_key" => "essencia_de_mana",   "quantity" => 2 },
+    { "item_id" => "bolsa_de_po",        "item_key" => "bolsa_de_po",        "quantity" => 1 }
   ],
   currency: { "tc" => 0, "tp" => 50, "to" => 20 }
 )
@@ -445,30 +377,14 @@ setup_equipment(
   user: luan,
   name: "Seraphina Venmoor",
   equipped_items: {
-    "main_hand" => {
-      "item_id" => "cajado_seraphina", "item_key" => "cajado_de_cristal",
-      "name" => "Cajado de Cristal", "category" => "Arcano",
-      "description" => "Dano 1d6 (impacto). Foco arcano — não consome componentes de magia.",
-      "price" => "150 TO", "weight" => 2
-    }
+    "main_hand" => { "item_key" => "bordao" },
+    "slot1"     => { "item_key" => "cajado_arcano" }
   },
   inventory: [
-    { "item_id" => "grimorio_seraphina", "item_key" => "grimorio", "quantity" => 1,
-      "item" => { "id" => "grimorio", "name" => "Grimório Élfico",
-                  "description" => "Livro de magias encadernado em couro de dragão. Contém anotações em élfico.", "category" => "Arcano",
-                  "price" => "200 TO", "weight" => 2 } },
-    { "item_id" => "pocao_cura_seraphina", "item_key" => "pocao_de_cura", "quantity" => 2,
-      "item" => { "id" => "pocao_de_cura", "name" => "Poção de Cura",
-                  "description" => "Recupera 2d6+2 PV ao beber.", "category" => "Consumível",
-                  "price" => "25 TO", "weight" => 1 } },
-    { "item_id" => "cristal_foco_seraphina", "item_key" => "cristal_de_foco", "quantity" => 1,
-      "item" => { "id" => "cristal_de_foco", "name" => "Cristal de Foco",
-                  "description" => "+1 no teste de resistência de magias ao usar como foco.", "category" => "Arcano",
-                  "price" => "75 TO", "weight" => 0 } },
-    { "item_id" => "bolsa_componentes_seraphina", "item_key" => "bolsa_de_componentes", "quantity" => 1,
-      "item" => { "id" => "bolsa_de_componentes", "name" => "Bolsa de Componentes",
-                  "description" => "Componentes materiais para conjuração de magias.", "category" => "Arcano",
-                  "price" => "25 TO", "weight" => 1 } }
+    { "item_id" => "tomo_hermetico",     "item_key" => "tomo_hermetico",     "quantity" => 1 },
+    { "item_id" => "balsamo_restaurador", "item_key" => "balsamo_restaurador", "quantity" => 2 },
+    { "item_id" => "orbe_cristalino",    "item_key" => "orbe_cristalino",    "quantity" => 1 },
+    { "item_id" => "robe_mistico",       "item_key" => "robe_mistico",       "quantity" => 1 }
   ],
   currency: { "tc" => 30, "tp" => 80, "to" => 15 }
 )

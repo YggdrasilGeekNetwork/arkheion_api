@@ -10,9 +10,58 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_09_151535) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_19_133243) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string "namespace"
+    t.text "body"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.string "author_type"
+    t.bigint "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
+  end
+
+  create_table "admin_users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_admin_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "feedback_items", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.string "status", default: "pending", null: false
+    t.integer "progress", default: 0, null: false
+    t.integer "upvotes_count", default: 0, null: false
+    t.uuid "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_feedback_items_on_status"
+    t.index ["user_id"], name: "index_feedback_items_on_user_id"
+  end
+
+  create_table "feedback_upvotes", force: :cascade do |t|
+    t.bigint "feedback_item_id", null: false
+    t.uuid "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feedback_item_id", "user_id"], name: "index_feedback_upvotes_on_feedback_item_id_and_user_id", unique: true
+    t.index ["feedback_item_id"], name: "index_feedback_upvotes_on_feedback_item_id"
+    t.index ["user_id"], name: "index_feedback_upvotes_on_user_id"
+  end
 
   create_table "tormenta20_character_sheets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
@@ -126,6 +175,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_09_151535) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "feedback_items", "users"
+  add_foreign_key "feedback_upvotes", "feedback_items"
+  add_foreign_key "feedback_upvotes", "users"
   add_foreign_key "tormenta20_character_sheets", "users"
   add_foreign_key "tormenta20_character_snapshots", "tormenta20_character_sheets", column: "character_sheet_id"
   add_foreign_key "tormenta20_character_states", "tormenta20_character_sheets", column: "character_sheet_id"

@@ -35,7 +35,7 @@ module Tormenta20
           if state.save
             Success(state)
           else
-            Failure[:persistence_error, state.errors.to_h]
+            Failure[:persistence_error, state.errors.messages]
           end
         end
 

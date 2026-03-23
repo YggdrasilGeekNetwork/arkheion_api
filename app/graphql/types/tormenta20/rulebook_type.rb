@@ -8,7 +8,6 @@ module Types
       description "Character class from the Tormenta20 gem"
       field :id,            String,  null: false
       field :name,          String,  null: false
-      field :description,   String,  null: true
       field :hit_points,    GraphQL::Types::JSON, null: true
       field :mana_points,   GraphQL::Types::JSON, null: true
       field :skills,        GraphQL::Types::JSON, null: true
@@ -17,6 +16,11 @@ module Types
       field :powers,        [String], null: true
       field :progression,   GraphQL::Types::JSON, null: true
       field :spellcasting,  GraphQL::Types::JSON, null: true
+      field :choices,       GraphQL::Types::JSON, null: true
+
+      def choices
+        ::Tormenta20::ClassChoicesBuilder.build(object).presence
+      end
     end
 
     class RulebookRacaType < Types::BaseObject
@@ -32,6 +36,11 @@ module Types
       field :racial_abilities,          [String], null: true
       field :chosen_abilities_amount,   Integer, null: true
       field :available_chosen_abilities, [String], null: true
+      field :choices,                   GraphQL::Types::JSON, null: true
+
+      def choices
+        ::Tormenta20::RaceChoicesBuilder.build(object).presence
+      end
     end
 
     class RulebookOrigemType < Types::BaseObject
@@ -42,6 +51,11 @@ module Types
       field :items,        GraphQL::Types::JSON, null: true
       field :benefits,     GraphQL::Types::JSON, null: true
       field :unique_power, String,  null: true
+      field :choices,      GraphQL::Types::JSON, null: true
+
+      def choices
+        ::Tormenta20::OriginChoicesBuilder.build(object).presence
+      end
     end
 
     class RulebookDivindadeType < Types::BaseObject
@@ -66,7 +80,7 @@ module Types
       field :kind,         String,  null: true, method: :type
       field :description,  String,  null: true
       field :effects,      GraphQL::Types::JSON, null: true
-      field :prerequisites, [String], null: true
+      field :prerequisites, GraphQL::Types::JSON, null: true
       field :class_id,     String,  null: true
       field :origin_id,    String,  null: true
     end

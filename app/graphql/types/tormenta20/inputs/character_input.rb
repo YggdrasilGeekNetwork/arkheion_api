@@ -227,7 +227,7 @@ module Types
         argument :description,      String,  required: false
         argument :quantity,         Integer, required: false
         argument :weight,           Float,   required: false
-        argument :spaces,           Integer, required: false
+        argument :spaces,           Float,   required: false
         argument :price,            Integer, required: false
         argument :category,         String,  required: false
         argument :effects,          [ItemEffectInput], required: false

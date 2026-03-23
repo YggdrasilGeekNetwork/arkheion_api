@@ -65,7 +65,7 @@ class CharacterTypeTest < ActiveSupport::TestCase
   test "attributes are returned in canonical order" do
     result = execute(@warrior.id)
     labels = result.dig("data", "character", "attributes").map { |a| a["label"] }
-    assert_equal %w[forca destreza constituicao sabedoria inteligencia carisma], labels
+    assert_equal %w[FOR DES CON SAB INT CAR], labels
   end
 
   test "spellDcTooltip is nil for non-caster" do

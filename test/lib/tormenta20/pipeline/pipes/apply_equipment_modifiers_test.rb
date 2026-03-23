@@ -40,18 +40,24 @@ class ApplyEquipmentModifiersTest < ActiveSupport::TestCase
     assert_equal 10, ctx[:computed_defenses][:defesa][:total]
   end
 
-  test "equipped_armor context key is set for known armor" do
-    # armaduras table may be empty in dev gem; just verify no crash with missing item
+  test "unknown armor key returns nil context" do
     ctx = run_with_equipment({ "armor" => { "item_key" => "nonexistent_armor" } })
 
     assert_nil ctx[:equipped_armor]
   end
 
-  test "equipped_main_hand context key is set" do
-    # armas table is empty in gem; just verify no crash
+  test "cota_de_malha sets equipped_armor context and adds defense bonus" do
+    ctx = run_with_equipment({ "armor" => { "item_key" => "cota_de_malha" } })
+
+    assert_not_nil ctx[:equipped_armor]
+    assert_equal "cota_de_malha", ctx[:equipped_armor][:key]
+    assert_equal 16, ctx[:computed_defenses][:defesa][:total] # 10 + 6 armor
+  end
+
+  test "espada_longa sets equipped_main_hand context" do
     ctx = run_with_equipment({ "main_hand" => { "item_key" => "espada_longa" } })
 
-    # either key is set (if weapon exists) or nil; test just ensures no exception
-    assert_nil ctx["equipped_main_hand"]
+    assert_not_nil ctx["equipped_main_hand"]
+    assert_equal "espada_longa", ctx["equipped_main_hand"][:key]
   end
 end

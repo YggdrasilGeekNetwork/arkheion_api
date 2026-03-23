@@ -15,7 +15,8 @@ module Tormenta20
         Pipes::ApplyEquipmentModifiers,
         Pipes::ApplyConditions,
         Pipes::ApplyActiveEffects,
-        Pipes::ComputeResources
+        Pipes::ComputeResources,
+        Pipes::ApplyEncumbrance
       ].freeze
 
       def self.call(character_sheet, include_state: true)
@@ -47,7 +48,8 @@ module Tormenta20
           PIPES - [
             Pipes::ApplyEquipmentModifiers,
             Pipes::ApplyConditions,
-            Pipes::ApplyActiveEffects
+            Pipes::ApplyActiveEffects,
+            Pipes::ApplyEncumbrance
           ]
         end
       end

@@ -1,4 +1,5 @@
 class Tormenta20::CharacterSheetsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :set_tormenta20_character_sheet, only: %i[ show update destroy ]
 
   # GET /tormenta20/character_sheets

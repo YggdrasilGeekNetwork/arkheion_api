@@ -31,6 +31,9 @@ module Types
     # Level-up helper — class powers available at a given level
     field :class_powers_for_level, resolver: Queries::Tormenta20::ClassPowersForLevelQuery
 
+    # Feedback
+    field :feedback_items, resolver: Queries::Feedback::FeedbackItemsQuery
+
     # Tormenta20 queries — internal / system
     field :character_sheet, resolver: Queries::Tormenta20::CharacterSheetQuery
     field :character_sheets, resolver: Queries::Tormenta20::CharacterSheetsQuery

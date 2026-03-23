@@ -27,7 +27,9 @@ module ArkheionBackend
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
-    config.api_only = true
+    # api_only disabled to support ActiveAdmin (which needs full Rails stack).
+    # All API controllers still inherit from ActionController::API directly.
+    config.api_only = false
 
     # GraphQL files are loaded manually in dependency order (below).
     # Zeitwerk must ignore app/graphql because many files define multiple
@@ -84,6 +86,9 @@ module ArkheionBackend
         character_summary_type
         rulebook_type
       ].each { |f| load gql.join("types/tormenta20/#{f}.rb") }
+
+      # Feedback types
+      load gql.join("types/feedback_item_type.rb")
 
       # 3. Input types
       Dir[gql.join("types/tormenta20/inputs/*.rb")].sort.each { |f| load f }

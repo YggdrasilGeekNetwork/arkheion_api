@@ -3,8 +3,8 @@
 module Auth
   class JwtService
     ALGORITHM = 'HS256'
-    ACCESS_TOKEN_EXPIRY = 15.minutes
-    REFRESH_TOKEN_EXPIRY = 7.days
+    ACCESS_TOKEN_EXPIRY = Rails.env.development? ? 1.year : 15.minutes
+    REFRESH_TOKEN_EXPIRY = Rails.env.development? ? 1.year : 7.days
 
     class << self
       def encode_access_token(user)

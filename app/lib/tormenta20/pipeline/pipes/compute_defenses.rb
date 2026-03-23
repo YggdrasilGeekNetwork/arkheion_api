@@ -138,7 +138,8 @@ module Tormenta20
           armor_key = state&.equipped_items&.dig("armor", "item_key")
           return nil unless armor_key
 
-          armor_definition(armor_key)&.properties&.dig("max_dex")
+          props = armor_definition(armor_key)&.properties
+          props.is_a?(Hash) ? props["max_dex"] : nil
         end
       end
     end

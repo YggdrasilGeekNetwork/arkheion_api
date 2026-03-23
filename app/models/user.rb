@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_many :character_sheets,
            class_name: 'Tormenta20::CharacterSheet',
            dependent: :destroy
+  has_many :feedback_items, dependent: :destroy
+  has_many :feedback_upvotes, dependent: :destroy
 
   validates :email, presence: true,
                     uniqueness: { case_sensitive: false },

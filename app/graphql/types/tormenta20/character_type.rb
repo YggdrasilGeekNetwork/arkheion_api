@@ -231,7 +231,7 @@ module Types
       field :description,      String,  null: true
       field :quantity,         Integer, null: true
       field :weight,           Float,   null: true
-      field :spaces,           Integer, null: true
+      field :spaces,           Float,   null: true
       field :price,            Integer, null: true
       field :category,         String,  null: true
       field :effects,          [FrontendItemEffectType], null: true
@@ -330,6 +330,7 @@ module Types
       field :equipped_items, FrontendEquippedItemsType,    null: false
       field :backpack,       [FrontendEquipmentItemType],  null: false
       field :currencies,     FrontendCurrenciesType,       null: false
+      field :notes,          GraphQL::Types::JSON,         null: true
 
       # Metadata
       field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
@@ -384,7 +385,7 @@ module Types
           data = attrs[key] || attrs[key.to_sym]
           next unless data
           {
-            label: key,
+            label: ATTR_ABBR[key] || key,
             value: data["total"] || data[:total] || 10,
             modifier: data["modifier"] || data[:modifier] || 0,
             visible: true
@@ -426,7 +427,7 @@ module Types
             name: key,
             modifier: data["total"] || data[:total] || 0,
             trained: data["trained"] || data[:trained] || false,
-            attribute: data["attribute"] || data[:attribute] || "",
+            attribute: ATTR_ABBR[data["attribute"] || data[:attribute]] || data["attribute"] || data[:attribute] || "",
             level_bonus: data["level_bonus"] || data[:level_bonus] || 0,
             training_bonus: data["training_bonus"] || data[:training_bonus] || 0,
             other_bonuses: (data["other_bonuses"] || data[:other_bonuses] || []).map do |b|
@@ -531,19 +532,20 @@ module Types
           left_hand:   format_item(data["off_hand"]  || data["left_hand"]),
           quick_draw1: format_item(data["quick_draw1"]),
           quick_draw2: format_item(data["quick_draw2"]),
-          slot1:       format_item(data["slot1"]),
-          slot2:       format_item(data["slot2"]),
+          slot1:       format_item(data["slot1"] || data["armor"]),
+          slot2:       format_item(data["slot2"] || data["shield"]),
           slot3:       format_item(data["slot3"]),
           slot4:       format_item(data["slot4"])
         }
       end
 
       def backpack
-        object.inventory.map do |entry|
+        object.inventory.flat_map do |entry|
           item = entry[:item] || entry["item"]
-          next nil unless item.is_a?(Hash)
-          format_item(item)&.merge(quantity: entry[:quantity] || entry["quantity"] || 1)
-        end.compact
+          next [] unless item.is_a?(Hash)
+          qty = [(entry[:quantity] || entry["quantity"] || 1).to_i, 1].max
+          qty.times.map { format_item(item) }
+        end
       end
 
       def currencies
@@ -551,6 +553,8 @@ module Types
         return { "tc" => 0, "tp" => 0, "to" => 0 } if data.blank?
         data
       end
+
+      def notes = object.notes.presence || {}
 
       private
 
@@ -837,13 +841,19 @@ module Types
 
       def format_item(item)
         return nil unless item.is_a?(Hash)
+        item_type = item[:item_type] || item["item_type"]
         {
-          id: item[:id] || item["id"] || "",
-          name: item[:name] || item["name"] || "",
-          description: item[:description] || item["description"],
-          spaces: item[:weight] || item["weight"],
-          price: item[:price] || item["price"],
-          category: item[:category] || item["category"] || item[:item_type] || item["item_type"]
+          id:               item[:id]          || item["id"]          || "",
+          name:             item[:name]        || item["name"]        || "",
+          description:      item[:description] || item["description"],
+          spaces:           item[:weight]      || item["weight"],
+          price:            item[:price]       || item["price"],
+          category:         item[:category]    || item["category"]    || item_type,
+          two_handed:       item[:two_handed]  || item["two_handed"]  || false,
+          versatile:        item[:versatile]   || item["versatile"]   || false,
+          using_two_handed: item[:using_two_handed] || item["using_two_handed"] || false,
+          allowed_slots:    item[:allowed_slots] || item["allowed_slots"] || [],
+          effects:          []
         }
       end
     end

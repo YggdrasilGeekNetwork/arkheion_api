@@ -16,8 +16,13 @@ gem "dry-operation"
 gem "dry-validation"
 gem "jwt"
 
-gem "tormenta20", "~> 0.2.8"
+gem "tormenta20", "~> 0.2.9"
 gem "minitest", "~> 5.0"
+
+gem "devise"
+gem "activeadmin"
+gem "sprockets-rails"
+gem "sassc-rails"
 
 group :development, :test do
   gem "dotenv-rails"

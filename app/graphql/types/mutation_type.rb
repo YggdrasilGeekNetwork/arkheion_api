@@ -28,6 +28,7 @@ module Types
     field :update_character_currencies,         mutation: Mutations::Tormenta20::UpdateCharacterCurrencies
     field :update_character_available_actions,  mutation: Mutations::Tormenta20::UpdateCharacterAvailableActions
     field :update_character_initiative_roll,    mutation: Mutations::Tormenta20::UpdateCharacterInitiativeRoll
+    field :update_character_notes,              mutation: Mutations::Tormenta20::UpdateCharacterNotes
 
     # Tormenta20 Character mutations — internal / system
     field :update_character, mutation: Mutations::Tormenta20::UpdateCharacter
@@ -37,5 +38,9 @@ module Types
     # Tormenta20 State mutations — internal / system
     field :apply_combat_action, mutation: Mutations::Tormenta20::ApplyCombatAction
     field :manage_state, mutation: Mutations::Tormenta20::ManageState
+
+    # Feedback
+    field :submit_feedback, mutation: Mutations::Feedback::SubmitFeedback
+    field :toggle_upvote,   mutation: Mutations::Feedback::ToggleUpvote
   end
 end
