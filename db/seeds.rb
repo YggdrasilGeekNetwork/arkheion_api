@@ -6,6 +6,32 @@
 
 BASE_URL = ENV.fetch("BASE_URL", "http://localhost:3000")
 
+puts "Seeding admin users..."
+
+# ─── Admin Users ─────────────────────────────────────────────────────────────
+
+AdminUser.find_or_create_by!(email: "admin@arkheion.dev") do |u|
+  u.password              = "admin123"
+  u.password_confirmation = "admin123"
+end
+
+puts "  ✓ admin@arkheion.dev / admin123"
+
+puts "Seeding guests..."
+
+# ─── Guests ──────────────────────────────────────────────────────────────────
+
+[
+  { email: "luan@arkheion.dev",   notes: "Fundador" },
+  { email: "player@arkheion.dev", notes: "Usuário de teste" }
+].each do |attrs|
+  Guest.find_or_create_by!(email: attrs[:email]) do |g|
+    g.notes = attrs[:notes]
+  end
+end
+
+puts "  ✓ #{Guest.count} guests"
+
 puts "Seeding users..."
 
 # ─── Users ───────────────────────────────────────────────────────────────────
@@ -25,6 +51,10 @@ player = User.find_or_create_by!(email: "player@arkheion.dev") do |u|
   u.confirmed_at = Time.current
   u.active       = true
 end
+
+# Mark seed users' guest slots as used
+Guest.find_by(email: "luan@arkheion.dev")&.mark_as_used!
+Guest.find_by(email: "player@arkheion.dev")&.mark_as_used!
 
 puts "  ✓ #{User.count} users"
 

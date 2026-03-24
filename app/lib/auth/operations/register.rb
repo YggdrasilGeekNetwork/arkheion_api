@@ -5,13 +5,23 @@ module Auth
     class Register < BaseOperation
       def call(email:, username:, password:, password_confirmation:)
         step validate_passwords(password, password_confirmation)
+        guest = step check_guest_list(email)
         user = step create_user(email, username, password)
+        guest&.mark_as_used!
         tokens = step generate_tokens(user)
 
         Success(user: user, tokens: tokens)
       end
 
       private
+
+      def check_guest_list(email)
+        guest = Guest.find_by(email: email.downcase.strip)
+        return Failure[:not_invited, "Este email não está na lista de convidados"] if guest.nil?
+        return Failure[:already_registered, "Este convidado já registrou uma conta"] if guest.used?
+
+        Success(guest)
+      end
 
       def validate_passwords(password, password_confirmation)
         if password == password_confirmation

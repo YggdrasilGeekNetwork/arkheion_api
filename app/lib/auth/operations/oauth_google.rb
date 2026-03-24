@@ -43,6 +43,11 @@ module Auth
           return Success(user)
         end
 
+        # New user — check guest list
+        guest = Guest.find_by(email: email.downcase)
+        return Failure[:not_invited, "Este email não está na lista de convidados"] if guest.nil?
+        return Failure[:already_registered, "Este convidado já registrou uma conta"] if guest.used?
+
         # Create brand-new user
         user = User.new(
           email: email.downcase,
@@ -57,6 +62,7 @@ module Auth
             user: user, provider: "google", uid: uid,
             email: email, name: name, avatar_url: avatar_url
           )
+          guest.mark_as_used!
           Success(user)
         else
           Failure[:validation_error, user.errors.to_h]

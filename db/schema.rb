@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_19_133243) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_24_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,6 +61,30 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_133243) do
     t.index ["feedback_item_id", "user_id"], name: "index_feedback_upvotes_on_feedback_item_id_and_user_id", unique: true
     t.index ["feedback_item_id"], name: "index_feedback_upvotes_on_feedback_item_id"
     t.index ["user_id"], name: "index_feedback_upvotes_on_user_id"
+  end
+
+  create_table "guests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email", null: false
+    t.datetime "used_at"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_guests_on_email", unique: true
+  end
+
+  create_table "oauth_identities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.string "email"
+    t.string "name"
+    t.string "avatar_url"
+    t.jsonb "data", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "uid"], name: "index_oauth_identities_on_provider_and_uid", unique: true
+    t.index ["user_id", "provider"], name: "index_oauth_identities_on_user_id_and_provider", unique: true
+    t.index ["user_id"], name: "index_oauth_identities_on_user_id"
   end
 
   create_table "tormenta20_character_sheets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -153,7 +177,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_133243) do
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", null: false
-    t.string "password_digest", null: false
+    t.string "encrypted_password"
     t.string "username", null: false
     t.string "display_name"
     t.string "jti", null: false
@@ -168,6 +192,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_133243) do
     t.jsonb "metadata", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "unconfirmed_email"
+    t.string "avatar_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
@@ -178,6 +204,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_133243) do
   add_foreign_key "feedback_items", "users"
   add_foreign_key "feedback_upvotes", "feedback_items"
   add_foreign_key "feedback_upvotes", "users"
+  add_foreign_key "oauth_identities", "users"
   add_foreign_key "tormenta20_character_sheets", "users"
   add_foreign_key "tormenta20_character_snapshots", "tormenta20_character_sheets", column: "character_sheet_id"
   add_foreign_key "tormenta20_character_states", "tormenta20_character_sheets", column: "character_sheet_id"

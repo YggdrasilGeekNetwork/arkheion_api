@@ -30,12 +30,9 @@ module Mutations
             errors: nil
           }
         in Dry::Monads::Failure[:validation_error, errors]
-          {
-            user: nil,
-            access_token: nil,
-            refresh_token: nil,
-            errors: format_errors(errors)
-          }
+          { user: nil, access_token: nil, refresh_token: nil, errors: format_errors(errors) }
+        in Dry::Monads::Failure[:not_invited | :already_registered, message]
+          { user: nil, access_token: nil, refresh_token: nil, errors: [message] }
         in Dry::Monads::Failure[_, message]
           raise GraphQL::ExecutionError, message
         end
