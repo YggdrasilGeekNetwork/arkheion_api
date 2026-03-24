@@ -2,25 +2,25 @@
 
 module Tormenta20
   class CharacterSheet < ApplicationRecord
-    self.table_name = 'tormenta20_character_sheets'
+    self.table_name = "tormenta20_character_sheets"
 
     belongs_to :user
     belongs_to :campaign, optional: true
 
     has_many :level_ups,
-             class_name: 'Tormenta20::LevelUp',
+             class_name: "Tormenta20::LevelUp",
              foreign_key: :character_sheet_id,
              dependent: :destroy,
              inverse_of: :character_sheet
 
     has_many :snapshots,
-             class_name: 'Tormenta20::CharacterSnapshot',
+             class_name: "Tormenta20::CharacterSnapshot",
              foreign_key: :character_sheet_id,
              dependent: :destroy,
              inverse_of: :character_sheet
 
     has_one :character_state,
-            class_name: 'Tormenta20::CharacterState',
+            class_name: "Tormenta20::CharacterState",
             foreign_key: :character_sheet_id,
             dependent: :destroy,
             inverse_of: :character_sheet

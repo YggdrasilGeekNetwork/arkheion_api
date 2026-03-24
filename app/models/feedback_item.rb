@@ -11,7 +11,7 @@ class FeedbackItem < ApplicationRecord
   validates :progress, numericality: { in: 0..100 }
 
   scope :visible, -> { where(status: %w[approved in_progress done]) }
-  scope :approved, -> { where(status: 'approved') }
+  scope :approved, -> { where(status: "approved") }
 
   def upvoted_by?(user)
     feedback_upvotes.exists?(user: user)

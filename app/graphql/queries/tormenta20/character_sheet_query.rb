@@ -9,7 +9,7 @@ module Queries
 
       def resolve(id:)
         current_user = context[:current_user]
-        raise GraphQL::ExecutionError, 'Not authenticated' unless current_user
+        raise GraphQL::ExecutionError, "Not authenticated" unless current_user
 
         ::Tormenta20::CharacterSheet.find_by(id: id, user_id: current_user.id)
       end

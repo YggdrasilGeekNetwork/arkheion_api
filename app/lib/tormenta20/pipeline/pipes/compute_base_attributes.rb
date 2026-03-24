@@ -35,7 +35,7 @@ module Tormenta20
           # Race bonuses from gem
           race = race_definition(context.character_sheet.race_key)
           race_bonus = race&.attribute_bonus_for(attr)
-          bonuses << { source: 'race', value: race_bonus } if race_bonus && race_bonus != 0
+          bonuses << { source: "race", value: race_bonus } if race_bonus && race_bonus != 0
 
           # Chosen attribute bonuses (e.g. Qareen selecting +1 to a second attribute)
           chosen_bonus = context.character_sheet.race_choices.dig("chosen_attribute_bonuses", attr)
@@ -43,7 +43,7 @@ module Tormenta20
 
           # Level-based attribute increases (every 4 levels in T20)
           context.level_ups.each do |level_up|
-            if level_up.metadata&.dig('attribute_increase') == attr
+            if level_up.metadata&.dig("attribute_increase") == attr
               bonuses << { source: "level_#{level_up.level}", value: 1 }
             end
           end

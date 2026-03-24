@@ -65,7 +65,7 @@ module Tormenta20
         if state.spend_pm(amount)
           Success(state: state, pm_spent: amount, current_pm: state.current_pm)
         else
-          Failure(error: :insufficient_pm, message: 'Not enough PM')
+          Failure(error: :insufficient_pm, message: "Not enough PM")
         end
       end
 

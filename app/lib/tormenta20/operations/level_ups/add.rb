@@ -27,7 +27,7 @@ module Tormenta20
           if sheet.can_level_up?
             Success(true)
           else
-            Failure[:max_level, 'Character is already at maximum level']
+            Failure[:max_level, "Character is already at maximum level"]
           end
         end
 

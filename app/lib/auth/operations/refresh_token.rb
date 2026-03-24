@@ -18,7 +18,7 @@ module Auth
         if user
           Success(user)
         else
-          Failure[:invalid_token, 'Invalid or expired refresh token']
+          Failure[:invalid_token, "Invalid or expired refresh token"]
         end
       end
 

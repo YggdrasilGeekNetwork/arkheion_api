@@ -99,7 +99,7 @@ module Tormenta20
                 id: "mago",
                 name: "Mago",
                 description: "Estudo e memorização em um grimório. Começa com 4 magias e aprende 1 extra ao acessar novo círculo. Atributo-chave: Inteligência."
-              },
+              }
             ]
           },
           {

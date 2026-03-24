@@ -23,7 +23,7 @@ module Tormenta20
         if sheet
           Success(sheet)
         else
-          Failure[:not_found, 'Character sheet not found']
+          Failure[:not_found, "Character sheet not found"]
         end
       end
 

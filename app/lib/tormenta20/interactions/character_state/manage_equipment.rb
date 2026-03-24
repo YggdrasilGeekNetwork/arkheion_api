@@ -21,7 +21,7 @@ module Tormenta20
         private
 
         def equip_item(state, slot, item_data)
-          return Failure(error: :invalid_params, message: 'Item data required') unless item_data
+          return Failure(error: :invalid_params, message: "Item data required") unless item_data
 
           # Validate the item can go in this slot
           validated = yield validate_equipment_slot(slot, item_data)
@@ -40,7 +40,7 @@ module Tormenta20
         def validate_equipment_slot(slot, item_data)
           valid_slots = %w[main_hand off_hand armor shield]
 
-          unless valid_slots.include?(slot.to_s) || slot.to_s.start_with?('accessory_')
+          unless valid_slots.include?(slot.to_s) || slot.to_s.start_with?("accessory_")
             return Failure(error: :invalid_slot, message: "Invalid slot: #{slot}")
           end
 

@@ -6,7 +6,7 @@ module Tormenta20
       class ApplyHealing < BaseOperation
         def call(character_sheet:, amount:, source: nil)
           state = character_sheet.character_state
-          return Failure[:not_found, 'State not found'] unless state
+          return Failure[:not_found, "State not found"] unless state
 
           snapshot = step get_snapshot(character_sheet)
           step apply_healing_to_state(state, amount, snapshot.pv_max)

@@ -26,7 +26,7 @@ module Tormenta20
       def sum_bonuses(bonuses)
         return 0 if bonuses.blank?
 
-        bonuses.sum { |b| b[:value] || b['value'] || 0 }
+        bonuses.sum { |b| b[:value] || b["value"] || 0 }
       end
 
       # Gem lookups

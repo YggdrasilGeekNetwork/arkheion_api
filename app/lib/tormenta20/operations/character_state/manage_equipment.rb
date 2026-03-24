@@ -8,7 +8,7 @@ module Tormenta20
 
         def call(character_sheet:, action:, slot:, item_data: nil)
           state = character_sheet.character_state
-          return Failure[:not_found, 'State not found'] unless state
+          return Failure[:not_found, "State not found"] unless state
 
           case action.to_sym
           when :equip
@@ -23,7 +23,7 @@ module Tormenta20
         private
 
         def equip_item(state, slot, item_data)
-          return Failure[:invalid_params, 'Item data required'] unless item_data
+          return Failure[:invalid_params, "Item data required"] unless item_data
 
           validated = step validate_equipment_slot(slot, item_data)
 
@@ -39,7 +39,7 @@ module Tormenta20
         end
 
         def validate_equipment_slot(slot, item_data)
-          unless VALID_SLOTS.include?(slot.to_s) || slot.to_s.start_with?('accessory_')
+          unless VALID_SLOTS.include?(slot.to_s) || slot.to_s.start_with?("accessory_")
             return Failure[:invalid_slot, "Invalid slot: #{slot}"]
           end
 

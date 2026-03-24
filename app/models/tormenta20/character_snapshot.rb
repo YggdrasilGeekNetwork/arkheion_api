@@ -2,10 +2,10 @@
 
 module Tormenta20
   class CharacterSnapshot < ApplicationRecord
-    self.table_name = 'tormenta20_character_snapshots'
+    self.table_name = "tormenta20_character_snapshots"
 
     belongs_to :character_sheet,
-               class_name: 'Tormenta20::CharacterSheet',
+               class_name: "Tormenta20::CharacterSheet",
                inverse_of: :snapshots
 
     validates :version, presence: true,
@@ -25,23 +25,23 @@ module Tormenta20
     end
 
     def pv_max
-      computed_resources.dig('pv', 'max') || 0
+      computed_resources.dig("pv", "max") || 0
     end
 
     def pm_max
-      computed_resources.dig('pm', 'max') || 0
+      computed_resources.dig("pm", "max") || 0
     end
 
     def attribute_modifier(attribute_key)
-      computed_attributes.dig(attribute_key.to_s, 'modifier') || 0
+      computed_attributes.dig(attribute_key.to_s, "modifier") || 0
     end
 
     def skill_total(skill_key)
-      computed_skills.dig(skill_key.to_s, 'total') || 0
+      computed_skills.dig(skill_key.to_s, "total") || 0
     end
 
     def defense_total(defense_key)
-      computed_defenses.dig(defense_key.to_s, 'total') || 0
+      computed_defenses.dig(defense_key.to_s, "total") || 0
     end
 
     private

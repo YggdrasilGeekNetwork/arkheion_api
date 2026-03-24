@@ -35,11 +35,11 @@ module Tormenta20
 
           value  = raca.vision_range ? "#{raca.vision_range}m" : "18m"
           tooltip = case raca.vision
-                    when "visao_no_escuro"
+          when "visao_no_escuro"
                       "Enxerga perfeitamente no escuro até #{value}"
-                    when "baixa_luminosidade"
+          when "baixa_luminosidade"
                       "Enxerga normalmente em iluminação fraca ou escuridão parcial"
-                    end
+          end
 
           [{ name: label, value: value, tooltip: tooltip }]
         end

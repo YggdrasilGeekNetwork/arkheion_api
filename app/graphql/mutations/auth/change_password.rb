@@ -14,7 +14,7 @@ module Mutations
 
       def resolve(current_password:, new_password:, new_password_confirmation:)
         user = context[:current_user]
-        raise GraphQL::ExecutionError, 'Not authenticated' unless user
+        raise GraphQL::ExecutionError, "Not authenticated" unless user
 
         result = ::Auth::Operations::ChangePassword.new.call(
           user: user,

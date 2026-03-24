@@ -2,10 +2,10 @@
 
 module Tormenta20
   class LevelUp < ApplicationRecord
-    self.table_name = 'tormenta20_level_ups'
+    self.table_name = "tormenta20_level_ups"
 
     belongs_to :character_sheet,
-               class_name: 'Tormenta20::CharacterSheet',
+               class_name: "Tormenta20::CharacterSheet",
                inverse_of: :level_ups
 
     validates :level, presence: true,
@@ -35,7 +35,7 @@ module Tormenta20
     def first_level_in_class?
       character_sheet.level_ups
                      .where(class_key: class_key)
-                     .where('level < ?', level)
+                     .where("level < ?", level)
                      .none?
     end
 
@@ -49,7 +49,7 @@ module Tormenta20
       return if level == 1
 
       previous_level = character_sheet.level_ups.find_by(level: level - 1)
-      errors.add(:level, 'previous level must exist') unless previous_level
+      errors.add(:level, "previous level must exist") unless previous_level
     end
 
     def validate_class_choices_schema

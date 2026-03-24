@@ -2,7 +2,7 @@
 
 module Auth
   class JwtService
-    ALGORITHM = 'HS256'
+    ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRY = Rails.env.development? ? 1.year : 15.minutes
     REFRESH_TOKEN_EXPIRY = Rails.env.development? ? 1.year : 7.days
 
@@ -11,7 +11,7 @@ module Auth
         payload = {
           sub: user.id,
           jti: user.jti,
-          type: 'access',
+          type: "access",
           exp: ACCESS_TOKEN_EXPIRY.from_now.to_i,
           iat: Time.current.to_i
         }
@@ -23,7 +23,7 @@ module Auth
         payload = {
           sub: user.id,
           jti: user.jti,
-          type: 'refresh',
+          type: "refresh",
           exp: REFRESH_TOKEN_EXPIRY.from_now.to_i,
           iat: Time.current.to_i
         }
@@ -43,7 +43,7 @@ module Auth
       def valid_access_token?(token)
         payload = decode(token)
         return false unless payload
-        return false unless payload[:type] == 'access'
+        return false unless payload[:type] == "access"
 
         user = User.find_by(id: payload[:sub])
         return false unless user
@@ -56,7 +56,7 @@ module Auth
       def valid_refresh_token?(token)
         payload = decode(token)
         return false unless payload
-        return false unless payload[:type] == 'refresh'
+        return false unless payload[:type] == "refresh"
 
         user = User.find_by(id: payload[:sub])
         return false unless user
@@ -69,7 +69,7 @@ module Auth
       private
 
       def secret_key
-        Rails.application.credentials.secret_key_base || ENV.fetch('SECRET_KEY_BASE')
+        Rails.application.credentials.secret_key_base || ENV.fetch("SECRET_KEY_BASE")
       end
     end
   end

@@ -10,35 +10,35 @@ module Tormenta20
         }.freeze
 
         SKILLS = {
-          'acrobacia' => 'destreza',
-          'adestramento' => 'carisma',
-          'atletismo' => 'forca',
-          'atuacao' => 'carisma',
-          'cavalgar' => 'destreza',
-          'conhecimento' => 'inteligencia',
-          'cura' => 'sabedoria',
-          'diplomacia' => 'carisma',
-          'enganacao' => 'carisma',
-          'fortitude' => 'constituicao',
-          'furtividade' => 'destreza',
-          'guerra' => 'inteligencia',
-          'iniciativa' => 'destreza',
-          'intimidacao' => 'carisma',
-          'intuicao' => 'sabedoria',
-          'investigacao' => 'inteligencia',
-          'jogatina' => 'carisma',
-          'ladinagem' => 'destreza',
-          'luta' => 'forca',
-          'misticismo' => 'inteligencia',
-          'nobreza' => 'inteligencia',
-          'oficio' => 'inteligencia',
-          'percepcao' => 'sabedoria',
-          'pilotagem' => 'destreza',
-          'pontaria' => 'destreza',
-          'reflexos' => 'destreza',
-          'religiao' => 'sabedoria',
-          'sobrevivencia' => 'sabedoria',
-          'vontade' => 'sabedoria'
+          "acrobacia" => "destreza",
+          "adestramento" => "carisma",
+          "atletismo" => "forca",
+          "atuacao" => "carisma",
+          "cavalgar" => "destreza",
+          "conhecimento" => "inteligencia",
+          "cura" => "sabedoria",
+          "diplomacia" => "carisma",
+          "enganacao" => "carisma",
+          "fortitude" => "constituicao",
+          "furtividade" => "destreza",
+          "guerra" => "inteligencia",
+          "iniciativa" => "destreza",
+          "intimidacao" => "carisma",
+          "intuicao" => "sabedoria",
+          "investigacao" => "inteligencia",
+          "jogatina" => "carisma",
+          "ladinagem" => "destreza",
+          "luta" => "forca",
+          "misticismo" => "inteligencia",
+          "nobreza" => "inteligencia",
+          "oficio" => "inteligencia",
+          "percepcao" => "sabedoria",
+          "pilotagem" => "destreza",
+          "pontaria" => "destreza",
+          "reflexos" => "destreza",
+          "religiao" => "sabedoria",
+          "sobrevivencia" => "sabedoria",
+          "vontade" => "sabedoria"
         }.freeze
 
         def call(context)
@@ -78,7 +78,7 @@ module Tormenta20
           total = 0
 
           # From origin
-          origin_skills = context.character_sheet.origin_choices['chosen_skills'] || []
+          origin_skills = context.character_sheet.origin_choices["chosen_skills"] || []
           total += 2 if origin_skills.include?(skill)
 
           # From level ups

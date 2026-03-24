@@ -3,7 +3,7 @@
 module Types
   module Tormenta20
     class CharacterSummaryType < Types::BaseObject
-      description 'Condensed character for listing'
+      description "Condensed character for listing"
 
       field :id,        ID,     null: false
       field :name,      String, null: false

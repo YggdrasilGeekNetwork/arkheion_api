@@ -10,7 +10,7 @@ module Queries
 
       def resolve(id:, live:)
         current_user = context[:current_user]
-        raise GraphQL::ExecutionError, 'Not authenticated' unless current_user
+        raise GraphQL::ExecutionError, "Not authenticated" unless current_user
 
         result = ::Tormenta20::Operations::CharacterView::Get.new.call(
           character_sheet_id: id,

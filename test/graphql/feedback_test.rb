@@ -69,7 +69,7 @@ class FeedbackTest < ActiveSupport::TestCase
     result = ArkheionSchema.execute(ITEMS_QUERY, context: { current_user: @user })
     titles = result.dig("data", "feedbackItems").map { |i| i["title"] }
 
-    assert_includes    titles, approved_item.title
+    assert_includes titles, approved_item.title
     assert_not_includes titles, pending_item.title
     assert_not_includes titles, rejected_item.title
   end

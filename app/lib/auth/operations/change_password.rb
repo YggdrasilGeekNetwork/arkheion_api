@@ -16,10 +16,10 @@ module Auth
       private
 
       def verify_current_password(user, password)
-        if user.authenticate(password)
+        if user.valid_password?(password)
           Success(user)
         else
-          Failure[:invalid_credentials, 'Current password is incorrect']
+          Failure[:invalid_credentials, "Current password is incorrect"]
         end
       end
 
@@ -27,7 +27,7 @@ module Auth
         if password == confirmation
           Success(true)
         else
-          Failure[:validation_error, { new_password_confirmation: ['does not match'] }]
+          Failure[:validation_error, { new_password_confirmation: ["does not match"] }]
         end
       end
 

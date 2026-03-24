@@ -6,7 +6,7 @@ module Tormenta20
       class Rest < BaseOperation
         def call(character_sheet:, rest_type:)
           state = character_sheet.character_state
-          return Failure[:not_found, 'State not found'] unless state
+          return Failure[:not_found, "State not found"] unless state
 
           snapshot = step get_snapshot(character_sheet)
 

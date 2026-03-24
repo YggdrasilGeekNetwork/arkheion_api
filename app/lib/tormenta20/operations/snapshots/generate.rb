@@ -17,7 +17,7 @@ module Tormenta20
 
         def cached_snapshot(sheet)
           snapshot = sheet.latest_snapshot
-          return Failure[:not_found, 'No snapshot available'] unless snapshot
+          return Failure[:not_found, "No snapshot available"] unless snapshot
 
           Success(snapshot: snapshot, cached: true)
         end

@@ -274,6 +274,7 @@ module Types
         argument :chosen_skills,       [String], required: false
         argument :chosen_powers,       [String], required: false
         argument :chosen_proficiencies, [String], required: false
+        argument :chosen_items,        [String], required: false
       end
 
       class FirstLevelInput < Types::BaseInputObject

@@ -21,7 +21,7 @@ module Tormenta20
     rule(:sheet_attributes) do
       if key?
         total = value.values.sum
-        key.failure('attribute points must sum to valid total') if total < 48 || total > 90
+        key.failure("attribute points must sum to valid total") if total < 48 || total > 90
       end
     end
   end

@@ -18,7 +18,7 @@ module Tormenta20
       { id: "CON", name: "Constituição" },
       { id: "INT", name: "Inteligência" },
       { id: "SAB", name: "Sabedoria" },
-      { id: "CAR", name: "Carisma" },
+      { id: "CAR", name: "Carisma" }
     ].freeze
 
     ATTR_OPTIONS_NO_CAR = ATTR_OPTIONS.reject { |o| o[:id] == "CAR" }.freeze
@@ -201,7 +201,7 @@ module Tormenta20
             maxSelections: 3,
             targetStep: "race",
             effectType: "attribute-bonus",
-            options: ATTR_OPTIONS,
+            options: ATTR_OPTIONS
           },
           {
             id: "versatil-mode",
@@ -215,8 +215,8 @@ module Tormenta20
             options: [
               { id: "two-skills",      name: "Duas perícias treinadas",      description: "Escolha 2 perícias adicionais para treinar" },
               { id: "skill-and-power", name: "Uma perícia e um poder geral", description: "Escolha 1 perícia adicional e 1 poder geral" }
-            ],
-          },
+            ]
+          }
         ]
       end
 
@@ -248,8 +248,8 @@ module Tormenta20
               { id: "trained-skill",             name: "Perícia treinada",               description: "Torne-se treinado em uma perícia à sua escolha (não precisa ser da sua classe)" },
               { id: "general-power",             name: "Poder geral",                    description: "Receba um poder geral à sua escolha" },
               { id: "racial-ability-other-race", name: "Habilidade racial de outra raça", description: "Escolha uma habilidade racial de outra raça humanoide (não humano)" }
-            ],
-          },
+            ]
+          }
         ]
       end
 
@@ -266,7 +266,7 @@ module Tormenta20
             maxSelections: 2,
             targetStep: "race",
             effectType: "attribute-bonus",
-            options: ATTR_OPTIONS_NO_CAR,
+            options: ATTR_OPTIONS_NO_CAR
           },
           {
             id: "deformidade-mode",
@@ -279,9 +279,9 @@ module Tormenta20
             effectType: "deformidade-mode",
             options: [
               { id: "two-skill-bonuses",  name: "+2 em duas perícias",                     description: "Escolha 2 perícias para receber +2 em cada uma" },
-              { id: "skill-and-tormenta", name: "+2 em uma perícia e um poder da Tormenta", description: "Escolha 1 perícia para receber +2 e 1 poder da Tormenta" },
-            ],
-          },
+              { id: "skill-and-tormenta", name: "+2 em uma perícia e um poder da Tormenta", description: "Escolha 1 perícia para receber +2 e 1 poder da Tormenta" }
+            ]
+          }
         ]
       end
 

@@ -5,33 +5,33 @@ module Tormenta20
     module Pipes
       class ApplyConditions < BasePipe
         CONDITION_EFFECTS = {
-          'abalado' => { skills: { all: -2 } },
-          'agarrado' => { defense: -4, movement: 0 },
-          'apavorado' => { skills: { all: -2 }, attack: -2, flee: true },
-          'atordoado' => { defense: -2, no_actions: true },
-          'caido' => { defense_melee: -4, defense_ranged: 4, attack_melee: -4 },
-          'cego' => { defense: -2, attack: -4, movement_half: true },
-          'confuso' => { random_actions: true },
-          'desprevenido' => { no_dex_to_defense: true },
-          'em_chamas' => { damage_per_round: '1d6' },
-          'enjoado' => { attack: -2, skills: { all: -2 } },
-          'enredado' => { defense: -2, attack: -2, movement_half: true },
-          'exausto' => { movement_half: true, attributes: { forca: -6, destreza: -6 } },
-          'fascinado' => { no_actions: true, perception: -4 },
-          'fatigado' => { attributes: { forca: -2, destreza: -2 }, no_run: true },
-          'fraco' => { attributes: { forca: -6 } },
-          'frustrado' => { pm_cost: 1 },
-          'imobilizado' => { movement: 0, defense: -4 },
-          'inconsciente' => { helpless: true },
-          'lento' => { movement_half: true, defense: -1, attack: -1 },
-          'ofuscado' => { attack: -1, perception: -1 },
-          'paralisado' => { helpless: true },
-          'pasmo' => { no_actions_round: true },
-          'petrificado' => { helpless: true, dr: 8 },
-          'sangrando' => { damage_per_round: 1 },
-          'surdo' => { initiative: -4, perception_hearing: :auto_fail },
-          'surpreendido' => { no_dex_to_defense: true, no_actions_round: true },
-          'vulneravel' => { defense: -5 }
+          "abalado" => { skills: { all: -2 } },
+          "agarrado" => { defense: -4, movement: 0 },
+          "apavorado" => { skills: { all: -2 }, attack: -2, flee: true },
+          "atordoado" => { defense: -2, no_actions: true },
+          "caido" => { defense_melee: -4, defense_ranged: 4, attack_melee: -4 },
+          "cego" => { defense: -2, attack: -4, movement_half: true },
+          "confuso" => { random_actions: true },
+          "desprevenido" => { no_dex_to_defense: true },
+          "em_chamas" => { damage_per_round: "1d6" },
+          "enjoado" => { attack: -2, skills: { all: -2 } },
+          "enredado" => { defense: -2, attack: -2, movement_half: true },
+          "exausto" => { movement_half: true, attributes: { forca: -6, destreza: -6 } },
+          "fascinado" => { no_actions: true, perception: -4 },
+          "fatigado" => { attributes: { forca: -2, destreza: -2 }, no_run: true },
+          "fraco" => { attributes: { forca: -6 } },
+          "frustrado" => { pm_cost: 1 },
+          "imobilizado" => { movement: 0, defense: -4 },
+          "inconsciente" => { helpless: true },
+          "lento" => { movement_half: true, defense: -1, attack: -1 },
+          "ofuscado" => { attack: -1, perception: -1 },
+          "paralisado" => { helpless: true },
+          "pasmo" => { no_actions_round: true },
+          "petrificado" => { helpless: true, dr: 8 },
+          "sangrando" => { damage_per_round: 1 },
+          "surdo" => { initiative: -4, perception_hearing: :auto_fail },
+          "surpreendido" => { no_dex_to_defense: true, no_actions_round: true },
+          "vulneravel" => { defense: -5 }
         }.freeze
 
         def call(context)
@@ -41,12 +41,12 @@ module Tormenta20
           active_conditions = state.active_conditions
 
           context[:active_condition_effects] = active_conditions.map do |condition|
-            condition_key = condition['condition_key']
+            condition_key = condition["condition_key"]
             {
               condition_key: condition_key,
               effects: CONDITION_EFFECTS[condition_key] || {},
-              stacks: condition['stacks'] || 1,
-              source: condition['source']
+              stacks: condition["stacks"] || 1,
+              source: condition["source"]
             }
           end
 

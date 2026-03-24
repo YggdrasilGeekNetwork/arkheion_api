@@ -26,12 +26,9 @@ module Mutations
             errors: nil
           }
         in Dry::Monads::Failure[:invalid_credentials, message]
-          {
-            user: nil,
-            access_token: nil,
-            refresh_token: nil,
-            errors: [message]
-          }
+          { user: nil, access_token: nil, refresh_token: nil, errors: [message] }
+        in Dry::Monads::Failure[:no_password, message]
+          { user: nil, access_token: nil, refresh_token: nil, errors: [message] }
         in Dry::Monads::Failure[:account_disabled, message]
           raise GraphQL::ExecutionError, message
         end

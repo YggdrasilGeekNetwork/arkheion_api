@@ -19,7 +19,7 @@ module Tormenta20
           if sheet.user_id == user.id
             Success(sheet)
           else
-            Failure(error: :forbidden, message: 'Not authorized')
+            Failure(error: :forbidden, message: "Not authorized")
           end
         end
 

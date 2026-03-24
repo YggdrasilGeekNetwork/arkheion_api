@@ -6,7 +6,7 @@ module Tormenta20
       class UpdateResources < BaseInteraction
         def call(character_sheet:, pv: nil, pm: nil, temporary_pv: nil)
           state = character_sheet.character_state
-          return Failure(error: :not_found, message: 'State not found') unless state
+          return Failure(error: :not_found, message: "State not found") unless state
 
           updates = {}
           updates[:current_pv] = pv if pv

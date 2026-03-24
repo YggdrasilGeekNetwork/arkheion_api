@@ -17,7 +17,7 @@ module Auth
         if password == password_confirmation
           Success(true)
         else
-          Failure[:validation_error, { password_confirmation: ['does not match password'] }]
+          Failure[:validation_error, { password_confirmation: ["does not match password"] }]
         end
       end
 
@@ -29,6 +29,7 @@ module Auth
         )
 
         if user.save
+          user.send_confirmation_instructions
           Success(user)
         else
           Failure[:validation_error, user.errors.to_h]

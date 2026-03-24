@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_secure_password
+  devise :database_authenticatable, :recoverable, :confirmable
 
+  has_many :oauth_identities, dependent: :destroy
   has_many :character_sheets,
-           class_name: 'Tormenta20::CharacterSheet',
+           class_name: "Tormenta20::CharacterSheet",
            dependent: :destroy
   has_many :feedback_items, dependent: :destroy
   has_many :feedback_upvotes, dependent: :destroy
@@ -16,7 +17,7 @@ class User < ApplicationRecord
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },
                        length: { minimum: 3, maximum: 30 },
-                       format: { with: /\A[a-zA-Z0-9_]+\z/, message: 'only allows letters, numbers, and underscores' }
+                       format: { with: /\A[a-zA-Z0-9_]+\z/, message: "only allows letters, numbers, and underscores" }
 
   validates :password, length: { minimum: 8 }, if: -> { password.present? }
 
@@ -26,20 +27,25 @@ class User < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
 
+  # --- Password helpers ---
+
+  def password_required?
+    return false if encrypted_password.blank? && oauth_identities.any?
+    super
+  end
+
+  def oauth_only?
+    encrypted_password.blank? && oauth_identities.any?
+  end
+
+  def has_password?
+    encrypted_password.present?
+  end
+
+  # --- Confirmation ---
+
   def confirmed?
     confirmed_at.present?
-  end
-
-  def regenerate_jti!
-    update!(jti: SecureRandom.uuid)
-  end
-
-  def generate_confirmation_token!
-    update!(
-      confirmation_token: SecureRandom.urlsafe_base64(32),
-      confirmation_sent_at: Time.current
-    )
-    confirmation_token
   end
 
   def confirm!
@@ -49,25 +55,36 @@ class User < ApplicationRecord
     )
   end
 
-  def generate_reset_password_token!
-    update!(
-      reset_password_token: SecureRandom.urlsafe_base64(32),
-      reset_password_sent_at: Time.current
-    )
-    reset_password_token
+  # Override Devise's send_confirmation_instructions to use our mailer.
+  # generate_confirmation_token! sets the raw token and persists it; Devise's
+  # version returns the raw token before hashing (when :confirmable is used
+  # without the hashed_token strategy, which is the default for devise).
+  def send_confirmation_instructions
+    raw = generate_confirmation_token!
+    UserMailer.confirmation_email(self, raw).deliver_later
+    raw
   end
 
-  def clear_reset_password_token!
-    update!(
-      reset_password_token: nil,
-      reset_password_sent_at: nil
-    )
+  # Override Devise's send_reset_password_instructions to use our mailer.
+  def send_reset_password_instructions
+    raw, enc = Devise.token_generator.generate(self.class, :reset_password_token)
+    self.reset_password_token   = enc
+    self.reset_password_sent_at = Time.now.utc
+    save(validate: false)
+    UserMailer.reset_password_email(self, raw).deliver_later
+    raw
   end
 
   def reset_password_token_valid?
     reset_password_token.present? &&
       reset_password_sent_at.present? &&
-      reset_password_sent_at > 2.hours.ago
+      reset_password_sent_at > 6.hours.ago
+  end
+
+  # --- JTI (JWT ID) ---
+
+  def regenerate_jti!
+    update!(jti: SecureRandom.uuid)
   end
 
   private

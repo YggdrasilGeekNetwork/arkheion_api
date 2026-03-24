@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Confirme seu email — Arkheion</title>
+  </head>
+  <body style="font-family: sans-serif; background: #0f0f0f; color: #e5e5e5; padding: 32px;">
+    <div style="max-width: 480px; margin: 0 auto; background: #1a1a1a; border-radius: 8px; padding: 32px; border: 1px solid #2a2a2a;">
+      <h1 style="color: #c9a227; margin-top: 0;">ARKHEION</h1>
+      <p>Olá, <strong><%= @user.display_name || @user.username %></strong>!</p>
+      <p>Obrigado por criar sua conta. Clique no botão abaixo para confirmar seu email:</p>
+      <p style="text-align: center; margin: 32px 0;">
+        <a href="<%= @confirmation_url %>"
+           style="background: #c9a227; color: #0f0f0f; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+          Confirmar email
+        </a>
+      </p>
+      <p style="color: #888; font-size: 13px;">
+        Se você não criou esta conta, ignore este email.<br>
+        O link expira em 24 horas.
+      </p>
+    </div>
+  </body>
+</html>

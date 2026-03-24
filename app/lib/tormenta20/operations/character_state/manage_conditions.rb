@@ -6,7 +6,7 @@ module Tormenta20
       class ManageConditions < BaseOperation
         def call(character_sheet:, action:, condition_key:, **options)
           state = character_sheet.character_state
-          return Failure[:not_found, 'State not found'] unless state
+          return Failure[:not_found, "State not found"] unless state
 
           case action.to_sym
           when :add

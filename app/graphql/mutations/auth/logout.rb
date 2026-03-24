@@ -8,7 +8,7 @@ module Mutations
 
       def resolve
         user = context[:current_user]
-        raise GraphQL::ExecutionError, 'Not authenticated' unless user
+        raise GraphQL::ExecutionError, "Not authenticated" unless user
 
         result = ::Auth::Operations::Logout.new.call(user: user)
 

@@ -20,15 +20,19 @@ module Auth
         if user
           Success(user)
         else
-          Failure[:invalid_credentials, 'Invalid email or password']
+          Failure[:invalid_credentials, "Invalid email or password"]
         end
       end
 
       def authenticate(user, password)
-        if user.authenticate(password)
+        if user.oauth_only?
+          return Failure[:no_password, 'Esta conta usa login pelo Google. Clique em "Entrar com Google" ou defina uma senha.']
+        end
+
+        if user.valid_password?(password)
           Success(user)
         else
-          Failure[:invalid_credentials, 'Invalid email or password']
+          Failure[:invalid_credentials, "Invalid email or password"]
         end
       end
 
@@ -36,7 +40,7 @@ module Auth
         if user.active?
           Success(user)
         else
-          Failure[:account_disabled, 'Account is disabled']
+          Failure[:account_disabled, "Account is disabled"]
         end
       end
 

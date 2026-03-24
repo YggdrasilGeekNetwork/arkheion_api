@@ -8,6 +8,13 @@ module Types
     field :refresh_tokens, mutation: Mutations::Auth::RefreshTokens
     field :logout, mutation: Mutations::Auth::Logout
     field :change_password, mutation: Mutations::Auth::ChangePassword
+    field :forgot_password, mutation: Mutations::Auth::ForgotPassword
+    field :reset_password, mutation: Mutations::Auth::ResetPassword
+    field :confirm_email, mutation: Mutations::Auth::ConfirmEmail
+    field :resend_confirmation, mutation: Mutations::Auth::ResendConfirmation
+    field :oauth_google, mutation: Mutations::Auth::OauthGoogle
+    field :set_password, mutation: Mutations::Auth::SetPassword
+    field :update_profile, mutation: Mutations::Auth::UpdateProfile
 
     # Tormenta20 Character mutations — frontend contract
     field :create_character,                    mutation: Mutations::Tormenta20::CreateCharacter

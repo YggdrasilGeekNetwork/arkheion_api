@@ -29,7 +29,7 @@ module Tormenta20
 
         def apply_state_updates(sheet, updates)
           state = sheet.character_state
-          return Failure[:not_found, 'Character state not found'] unless state
+          return Failure[:not_found, "Character state not found"] unless state
 
           state.assign_attributes(updates)
           if state.save

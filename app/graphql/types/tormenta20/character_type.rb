@@ -278,7 +278,7 @@ module Types
     # ─── Main CharacterType ───────────────────────────────────────────────────
 
     class CharacterType < Types::BaseObject
-      description 'Frontend-facing Character type (flat, display-ready)'
+      description "Frontend-facing Character type (flat, display-ready)"
 
       field :id,       ID,     null: false
       field :name,     String, null: false

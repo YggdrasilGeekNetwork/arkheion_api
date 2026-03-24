@@ -18,7 +18,7 @@ module Tormenta20
         private
 
         def apply_effect(context, effect)
-          modifiers = effect['modifiers'] || {}
+          modifiers = effect["modifiers"] || {}
 
           modifiers.each do |target, value|
             case target
@@ -28,15 +28,15 @@ module Tormenta20
               apply_skill_modifier(context, ::Regexp.last_match(1), value)
             when /^defense_(.+)$/
               apply_defense_modifier(context, ::Regexp.last_match(1), value)
-            when 'attack_melee'
+            when "attack_melee"
               apply_attack_modifier(context, :melee_attack, value)
-            when 'attack_ranged'
+            when "attack_ranged"
               apply_attack_modifier(context, :ranged_attack, value)
-            when 'pv_max'
+            when "pv_max"
               apply_resource_modifier(context, :pv, :max, value)
-            when 'pm_max'
+            when "pm_max"
               apply_resource_modifier(context, :pm, :max, value)
-            when 'movement'
+            when "movement"
               apply_resource_modifier(context, :deslocamento, :total, value)
             end
           end

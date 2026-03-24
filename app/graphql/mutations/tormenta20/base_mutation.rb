@@ -10,7 +10,7 @@ module Mutations
       end
 
       def require_authentication!
-        raise GraphQL::ExecutionError, 'Not authenticated' unless current_user
+        raise GraphQL::ExecutionError, "Not authenticated" unless current_user
       end
 
       def handle_result(result)
@@ -31,9 +31,9 @@ module Mutations
       def format_errors(errors)
         case errors
         when Hash
-          errors.map { |field, messages| "#{field}: #{Array(messages).join(', ')}" }.join('; ')
+          errors.map { |field, messages| "#{field}: #{Array(messages).join(', ')}" }.join("; ")
         when Array
-          errors.join('; ')
+          errors.join("; ")
         else
           errors.to_s
         end
@@ -41,7 +41,7 @@ module Mutations
 
       def find_character_sheet!(id)
         sheet = ::Tormenta20::CharacterSheet.find_by(id: id, user_id: current_user.id)
-        raise GraphQL::ExecutionError, 'Character sheet not found' unless sheet
+        raise GraphQL::ExecutionError, "Character sheet not found" unless sheet
 
         sheet
       end

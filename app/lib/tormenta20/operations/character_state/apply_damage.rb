@@ -6,7 +6,7 @@ module Tormenta20
       class ApplyDamage < BaseOperation
         def call(character_sheet:, amount:, damage_type: nil, source: nil)
           state = character_sheet.character_state
-          return Failure[:not_found, 'State not found'] unless state
+          return Failure[:not_found, "State not found"] unless state
 
           damage = step calculate_effective_damage(state, amount, damage_type)
           step apply_damage_to_state(state, damage)

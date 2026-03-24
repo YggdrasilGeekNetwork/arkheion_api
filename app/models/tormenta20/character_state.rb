@@ -2,10 +2,10 @@
 
 module Tormenta20
   class CharacterState < ApplicationRecord
-    self.table_name = 'tormenta20_character_states'
+    self.table_name = "tormenta20_character_states"
 
     belongs_to :character_sheet,
-               class_name: 'Tormenta20::CharacterSheet',
+               class_name: "Tormenta20::CharacterSheet",
                inverse_of: :character_state
 
     validates :character_sheet_id, uniqueness: true
@@ -64,18 +64,18 @@ module Tormenta20
     end
 
     def add_condition(condition_key, **options)
-      condition = { 'condition_key' => condition_key }.merge(options.stringify_keys)
+      condition = { "condition_key" => condition_key }.merge(options.stringify_keys)
       self.active_conditions = active_conditions + [condition]
       save!
     end
 
     def remove_condition(condition_key)
-      self.active_conditions = active_conditions.reject { |c| c['condition_key'] == condition_key }
+      self.active_conditions = active_conditions.reject { |c| c["condition_key"] == condition_key }
       save!
     end
 
     def has_condition?(condition_key)
-      active_conditions.any? { |c| c['condition_key'] == condition_key }
+      active_conditions.any? { |c| c["condition_key"] == condition_key }
     end
 
     def equip_item(slot, item_data)
@@ -92,11 +92,11 @@ module Tormenta20
 
     def clear_expired_effects!
       self.active_effects = active_effects.reject do |effect|
-        effect['duration']&.zero?
+        effect["duration"]&.zero?
       end
 
       self.active_conditions = active_conditions.reject do |condition|
-        condition['duration']&.zero?
+        condition["duration"]&.zero?
       end
     end
 
