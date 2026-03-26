@@ -16,7 +16,7 @@ gem "dry-operation"
 gem "dry-validation"
 gem "jwt"
 
-gem "tormenta20", "~> 0.2.10"
+gem "tormenta20", "~> 0.2.12"
 gem "minitest", "~> 5.0"
 
 gem "devise"

@@ -17,3 +17,6 @@ Tormenta20::Models::Base.establish_connection(
 # ApplicationRecord inherits from ActiveRecord::Base, so setting it here
 # is sufficient — tormenta20 models still use the SQLite pool set above.
 ActiveRecord::Base.establish_connection(Rails.env.to_sym)
+
+# Silence SQL query logs from the tormenta20 SQLite connection.
+Tormenta20::Models::Base.logger = Logger.new(nil)

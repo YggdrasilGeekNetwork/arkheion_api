@@ -14,9 +14,15 @@ module Mutations
       end
 
       def handle_result(result)
+        if result.is_a?(Dry::Monads::Result::Success)
+          payload = result.value!
+          # dry-operation 1.1.0 wraps call in `steps { Success(super) }`,
+          # so operations returning Success(x) end up double-wrapped.
+          payload = payload.value! if payload.is_a?(Dry::Monads::Result::Success)
+          return payload
+        end
+
         case result
-        in Dry::Monads::Success(payload)
-          payload
         in Dry::Monads::Failure[:not_found, message]
           raise GraphQL::ExecutionError, message
         in Dry::Monads::Failure[:validation_error, errors]

@@ -84,4 +84,33 @@ class CharacterCreateOperationTest < ActiveSupport::TestCase
 
     assert Tormenta20::CharacterSheet.where(user: @user).exists?
   end
+
+  test "initializes inventory and currency from starting params" do
+    params = valid_character_params(
+      starting_inventory: [
+        { item_key: "espada_longa", item_id: "start-espada_longa", quantity: 1 },
+        { item_key: "armadura_de_couro", item_id: "start-armadura_de_couro", quantity: 1 }
+      ],
+      starting_currency: { tc: 0, tp: 0, to: 12 }
+    )
+
+    result = Tormenta20::Operations::Characters::Create.new.call(params: params, user: @user)
+    success!(result)
+
+    state = Tormenta20::CharacterSheet.last.character_state
+    assert_equal 2, state.inventory.length
+    assert_equal "espada_longa", state.inventory.first["item_key"]
+    assert_equal 12, state.currency["to"]
+  end
+
+  test "does not persist any record when validation fails" do
+    count_before = Tormenta20::CharacterSheet.count
+
+    Tormenta20::Operations::Characters::Create.new.call(
+      params: valid_character_params(race_key: "nao_existe"),
+      user: @user
+    )
+
+    assert_equal count_before, Tormenta20::CharacterSheet.count
+  end
 end

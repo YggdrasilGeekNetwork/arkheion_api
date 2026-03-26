@@ -49,7 +49,7 @@ module Tormenta20
           computed[attr][:effect_bonus] ||= 0
           computed[attr][:effect_bonus] += value
           computed[attr][:total] += value
-          computed[attr][:modifier] = modifier_for(computed[attr][:total])
+          computed[attr][:modifier] = computed[attr][:total]
         end
 
         def apply_skill_modifier(context, skill, value)

@@ -13,7 +13,7 @@ class ComputeSkillsTest < ActiveSupport::TestCase
   end
 
   test "untrained skill has total equal to attribute modifier" do
-    s   = sheet(sheet_attributes: { "destreza" => 14 })
+    s   = sheet(sheet_attributes: { "destreza" => 2 })
     ctx = run_skills(sheet: s)
 
     skill = ctx[:computed_skills]["acrobacia"]
@@ -23,7 +23,7 @@ class ComputeSkillsTest < ActiveSupport::TestCase
 
   test "skill trained from origin gets +2 ranks and +2 training bonus" do
     s = sheet(origin_choices: { "chosen_skills" => ["acrobacia"] },
-              sheet_attributes: { "destreza" => 14 })
+              sheet_attributes: { "destreza" => 2 })
     ctx = run_skills(sheet: s)
 
     skill = ctx[:computed_skills]["acrobacia"]
@@ -34,7 +34,7 @@ class ComputeSkillsTest < ActiveSupport::TestCase
 
   test "skill points from level_up are summed" do
     lu  = level_up(skill_points: { "luta" => 2 })
-    s   = sheet(sheet_attributes: { "forca" => 14 })
+    s   = sheet(sheet_attributes: { "forca" => 2 })
     ctx = run_skills(sheet: s, level_ups: [lu])
 
     skill = ctx[:computed_skills]["luta"]
@@ -45,7 +45,7 @@ class ComputeSkillsTest < ActiveSupport::TestCase
   test "skill points from multiple level_ups accumulate" do
     lu1 = level_up(level: 1, skill_points: { "atletismo" => 1 })
     lu2 = level_up(level: 2, skill_points: { "atletismo" => 1 })
-    s   = sheet(sheet_attributes: { "forca" => 10 })
+    s   = sheet(sheet_attributes: { "forca" => 0 })
     ctx = run_skills(sheet: s, level_ups: [lu1, lu2])
 
     skill = ctx[:computed_skills]["atletismo"]
@@ -78,7 +78,7 @@ class ComputeSkillsTest < ActiveSupport::TestCase
 
   # investigador: add_attr_bonus_to_skill intuicao (INT modifier)
   test "investigador adds INT modifier to intuicao (add_attr_bonus_to_skill)" do
-    s  = sheet(sheet_attributes: { "inteligencia" => 16 })  # INT mod = +3
+    s  = sheet(sheet_attributes: { "inteligencia" => 3 })  # INT mod = +3
     lu = level_up(abilities_chosen: { "class_abilities" => ["investigador"] })
     ctx = run_skills(sheet: s, level_ups: [lu])
 

@@ -1,24 +1,54 @@
-# README
+# arkheion_api
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails 8 API para o Arkheion — gerenciamento de fichas de personagem Tormenta20.
 
-Things you may want to cover:
+## Requisitos
 
-* Ruby version
+- Ruby 3.4.1
+- PostgreSQL 16
+- Docker + Docker Compose (para rodar via container)
 
-* System dependencies
+### Instalar Docker Compose
 
-* Configuration
+```bash
+# Debian/Ubuntu
+sudo apt-get update
+sudo apt-get install -y docker-compose-plugin
 
-* Database creation
+# Verificar
+docker compose version
+```
 
-* Database initialization
+## Rodar com Docker Compose
 
-* How to run the test suite
+```bash
+# Copiar variáveis de ambiente
+cp .env.example .env
+# Preencher RAILS_MASTER_KEY em .env
 
-* Services (job queues, cache servers, search engines, etc.)
+# Subir
+docker compose up --build
 
-* Deployment instructions
+# Rodar migrations na primeira vez
+docker compose exec api ./bin/rails db:migrate
 
-* ...
+# Derrubar
+docker compose down
+```
+
+O serviço `api` sobe na porta `80`. O banco PostgreSQL é provisionado automaticamente.
+
+## Desenvolvimento local
+
+```bash
+bundle install
+cp .env.example .env
+./bin/rails db:create db:migrate
+./bin/rails s
+```
+
+## Testes
+
+```bash
+rails test
+```

@@ -14,7 +14,7 @@ class ComputeResourcesTest < ActiveSupport::TestCase
 
   # Guerreiro: initial_hp=20, hp_per_level=5, mp_per_level=3
   test "guerreiro level 1 PV = initial_hp + CON mod" do
-    s   = sheet(sheet_attributes: { "constituicao" => 14 })
+    s   = sheet(sheet_attributes: { "constituicao" => 2 })
     lu  = level_up(class_key: "guerreiro", level: 1)
     ctx = run_resources(sheet: s, level_ups: [lu])
 
@@ -22,7 +22,7 @@ class ComputeResourcesTest < ActiveSupport::TestCase
   end
 
   test "guerreiro level 2 PV adds hp_per_level + CON mod" do
-    s   = sheet(sheet_attributes: { "constituicao" => 14 })
+    s   = sheet(sheet_attributes: { "constituicao" => 2 })
     lu1 = level_up(class_key: "guerreiro", level: 1)
     lu2 = level_up(class_key: "guerreiro", level: 2)
     ctx = run_resources(sheet: s, level_ups: [lu1, lu2])
@@ -57,7 +57,7 @@ class ComputeResourcesTest < ActiveSupport::TestCase
 
   # sarado: { type: "add_PV_attr", attr: "for" } — PV += STR modifier
   test "sarado adds STR modifier to PV max" do
-    s  = sheet(sheet_attributes: { "forca" => 16 })  # STR mod = +3
+    s  = sheet(sheet_attributes: { "forca" => 3 })  # STR mod = +3
     lu = level_up(class_key: "guerreiro", level: 1,
                   abilities_chosen: { "class_abilities" => ["sarado"] })
     lu_plain = level_up(class_key: "guerreiro", level: 1)

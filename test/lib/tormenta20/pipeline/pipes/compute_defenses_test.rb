@@ -13,28 +13,28 @@ class ComputeDefensesTest < ActiveSupport::TestCase
   end
 
   test "base defense = 10 + dex modifier" do
-    s   = sheet(sheet_attributes: { "destreza" => 14 })
+    s   = sheet(sheet_attributes: { "destreza" => 2 })
     ctx = run_defenses(sheet: s)
 
     assert_equal 12, ctx[:computed_defenses][:defesa][:total]  # 10 + 2
   end
 
   test "fortitude uses constituicao modifier" do
-    s   = sheet(sheet_attributes: { "constituicao" => 14 })
+    s   = sheet(sheet_attributes: { "constituicao" => 2 })
     ctx = run_defenses(sheet: s)
 
     assert_equal 2, ctx[:computed_defenses][:fortitude][:total]
   end
 
   test "reflexos uses destreza modifier" do
-    s   = sheet(sheet_attributes: { "destreza" => 16 })
+    s   = sheet(sheet_attributes: { "destreza" => 3 })
     ctx = run_defenses(sheet: s)
 
     assert_equal 3, ctx[:computed_defenses][:reflexos][:total]
   end
 
   test "vontade uses sabedoria modifier" do
-    s   = sheet(sheet_attributes: { "sabedoria" => 12 })
+    s   = sheet(sheet_attributes: { "sabedoria" => 1 })
     ctx = run_defenses(sheet: s)
 
     assert_equal 1, ctx[:computed_defenses][:vontade][:total]

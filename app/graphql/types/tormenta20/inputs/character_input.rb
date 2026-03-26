@@ -288,16 +288,24 @@ module Types
 
       # ─── Top-level Inputs ─────────────────────────────────────────────────────
 
+      class StartingInventoryItemInput < Types::BaseInputObject
+        argument :item_key,  String,  required: true
+        argument :item_id,   String,  required: true
+        argument :quantity,  Integer, required: true
+      end
+
       class CreateCharacterInput < Types::BaseInputObject
-        argument :name,           String,            required: true
-        argument :image_url,      String,            required: false
-        argument :race_key,       String,            required: true
-        argument :race_choices,   CreateRaceChoicesInput,   required: false
-        argument :origin_key,     String,                   required: true
-        argument :origin_choices, CreateOriginChoicesInput, required: false
-        argument :deity_key,      String,            required: false
-        argument :sheet_attributes, SheetAttributesInput, required: true
-        argument :first_level,    FirstLevelInput,   required: true
+        argument :name,               String,            required: true
+        argument :image_url,          String,            required: false
+        argument :race_key,           String,            required: true
+        argument :race_choices,       CreateRaceChoicesInput,   required: false
+        argument :origin_key,         String,                   required: true
+        argument :origin_choices,     CreateOriginChoicesInput, required: false
+        argument :deity_key,          String,            required: false
+        argument :sheet_attributes,   SheetAttributesInput, required: true
+        argument :first_level,        FirstLevelInput,   required: true
+        argument :starting_inventory, [StartingInventoryItemInput], required: false
+        argument :starting_currency,  CurrenciesInput,   required: false
       end
 
       class LevelUpCharacterInput < Types::BaseInputObject

@@ -44,7 +44,7 @@ class ComputeCombatTest < ActiveSupport::TestCase
 
   test "melee total includes BAB + STR modifier" do
     lu  = level_up(class_key: "guerreiro", level: 1)
-    s   = sheet(sheet_attributes: { "forca" => 14 })
+    s   = sheet(sheet_attributes: { "forca" => 2 })
     ctx = run_combat(sheet: s, level_ups: [lu])
 
     assert_equal 3, ctx[:computed_combat][:melee_attack][:total]  # 1 BAB + 2 STR
@@ -52,7 +52,7 @@ class ComputeCombatTest < ActiveSupport::TestCase
 
   test "ranged total includes BAB + DEX modifier" do
     lu  = level_up(class_key: "guerreiro", level: 1)
-    s   = sheet(sheet_attributes: { "destreza" => 14 })
+    s   = sheet(sheet_attributes: { "destreza" => 2 })
     ctx = run_combat(sheet: s, level_ups: [lu])
 
     assert_equal 3, ctx[:computed_combat][:ranged_attack][:total]  # 1 BAB + 2 DEX

@@ -439,7 +439,7 @@ GEM
     thruster (0.1.12-x86_64-linux)
     tilt (2.7.0)
     timeout (0.6.0)
-    tormenta20 (0.2.10)
+    tormenta20 (0.2.12)
       activerecord (~> 8.0)
       activesupport (~> 8.0)
       sqlite3 (~> 2.0)
@@ -499,7 +499,7 @@ DEPENDENCIES
   simplecov
   sprockets-rails
   thruster
-  tormenta20 (~> 0.2.10)
+  tormenta20 (~> 0.2.12)
 
 BUNDLED WITH
    2.6.2

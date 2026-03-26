@@ -8,8 +8,8 @@ class ApplyEncumbranceTest < ActiveSupport::TestCase
   # FOR 0 → max = 10 spaces
   BASE_SHEET = {
     sheet_attributes: {
-      "forca" => 10, "destreza" => 10, "constituicao" => 10,
-      "inteligencia" => 10, "sabedoria" => 10, "carisma" => 10
+      "forca" => 0, "destreza" => 0, "constituicao" => 0,
+      "inteligencia" => 0, "sabedoria" => 0, "carisma" => 0
     }
   }.freeze
 
@@ -76,13 +76,13 @@ class ApplyEncumbranceTest < ActiveSupport::TestCase
   end
 
   test "FOR +2 raises max to 14, same load is fine" do
-    # FOR 14 → modifier +2 → max = 10 + 4 = 14
+    # FOR +2 modifier → max = 10 + 4 = 14
     # 11 items → 11 < 14 → no penalty
     st  = state(
       inventory: [{ "item_key" => "tocha", "quantity" => 11 }]
     )
     ctx = build_context(
-      sheet: sheet(BASE_SHEET.merge(sheet_attributes: BASE_SHEET[:sheet_attributes].merge("forca" => 14))),
+      sheet: sheet(BASE_SHEET.merge(sheet_attributes: BASE_SHEET[:sheet_attributes].merge("forca" => 2))),
       state: st
     )
     with_base_attributes(ctx)

@@ -85,7 +85,7 @@ module Tormenta20
             computed[attr.to_s][:condition_penalty] ||= 0
             computed[attr.to_s][:condition_penalty] += penalty * stacks
             computed[attr.to_s][:total] += penalty * stacks
-            computed[attr.to_s][:modifier] = modifier_for(computed[attr.to_s][:total])
+            computed[attr.to_s][:modifier] = computed[attr.to_s][:total]
           end
         end
 

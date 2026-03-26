@@ -7,7 +7,7 @@ class ApplyConditionsTest < ActiveSupport::TestCase
 
   def run_with_conditions(conditions)
     st  = state(active_conditions: conditions)
-    s   = sheet(sheet_attributes: { "destreza" => 14 })
+    s   = sheet(sheet_attributes: { "destreza" => 2 })
     ctx = build_context(sheet: s, state: st)
     with_base_attributes(ctx)
     Tormenta20::Pipeline::Pipes::ComputeDefenses.call(ctx)
@@ -34,7 +34,7 @@ class ApplyConditionsTest < ActiveSupport::TestCase
   end
 
   test "abalado applies -2 to all skill totals" do
-    s   = sheet(sheet_attributes: { "destreza" => 14 })
+    s   = sheet(sheet_attributes: { "destreza" => 2 })
     st  = state(active_conditions: [{ "condition_key" => "abalado", "stacks" => 1 }])
     ctx = build_context(sheet: s, state: st)
     with_base_attributes(ctx)

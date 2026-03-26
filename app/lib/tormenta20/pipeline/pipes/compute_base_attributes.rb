@@ -11,7 +11,7 @@ module Tormenta20
           computed = {}
 
           %w[forca destreza constituicao inteligencia sabedoria carisma].each do |attr|
-            base = base_attributes[attr] || 10
+            base = base_attributes[attr] || 0
             bonuses = collect_bonuses(context, attr)
             total = base + sum_bonuses(bonuses)
 
@@ -19,7 +19,7 @@ module Tormenta20
               base: base,
               bonuses: bonuses,
               total: total,
-              modifier: modifier_for(total)
+              modifier: total
             }
           end
 

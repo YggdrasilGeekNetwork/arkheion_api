@@ -43,16 +43,16 @@ class ComputeSpellsTest < ActiveSupport::TestCase
 
   test "save_dc total = 10 + INT modifier for arcanista" do
     # INT 18 → modifier +4
-    s = sheet(sheet_attributes: { "forca" => 10, "destreza" => 10, "constituicao" => 10,
-                                  "inteligencia" => 18, "sabedoria" => 10, "carisma" => 10 })
+    s = sheet(sheet_attributes: { "forca" => 0, "destreza" => 0, "constituicao" => 0,
+                                  "inteligencia" => 4, "sabedoria" => 0, "carisma" => 10 })
     ctx = run_spells(sheet: s, level_ups: [level_up(class_key: "arcanista")])
     assert_equal 14, ctx[:computed_spells][:save_dc][:total]
   end
 
   test "save_dc includes permanent CD_improvement power bonus" do
     # "fortalecimento_arcano" has a permanent CD_improvement of +1
-    s = sheet(sheet_attributes: { "forca" => 10, "destreza" => 10, "constituicao" => 10,
-                                  "inteligencia" => 10, "sabedoria" => 10, "carisma" => 10 })
+    s = sheet(sheet_attributes: { "forca" => 0, "destreza" => 0, "constituicao" => 0,
+                                  "inteligencia" => 0, "sabedoria" => 0, "carisma" => 10 })
     lu = level_up(class_key: "arcanista",
                   powers_chosen: { "poder_de_arcanista" => ["fortalecimento_arcano"] })
     ctx = run_spells(sheet: s, level_ups: [lu])
@@ -64,8 +64,8 @@ class ComputeSpellsTest < ActiveSupport::TestCase
 
   test "save_dc conditional bonus not included in total but listed separately" do
     # "especialista_em_escola" has a conditional CD_improvement of +2 (only for chosen school)
-    s = sheet(sheet_attributes: { "forca" => 10, "destreza" => 10, "constituicao" => 10,
-                                  "inteligencia" => 10, "sabedoria" => 10, "carisma" => 10 })
+    s = sheet(sheet_attributes: { "forca" => 0, "destreza" => 0, "constituicao" => 0,
+                                  "inteligencia" => 0, "sabedoria" => 0, "carisma" => 10 })
     lu = level_up(class_key: "arcanista",
                   powers_chosen: { "poder_de_arcanista" => ["especialista_em_escola"] })
     ctx = run_spells(sheet: s, level_ups: [lu])
