@@ -1,0 +1,39 @@
+service: arkheion-api
+image: seu-usuario-dockerhub/arkheion-api
+
+servers:
+  web:
+    - 0.0.0.0  # IP público do droplet
+
+registry:
+  username: seu-usuario-dockerhub
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    DB_HOST: arkheion-api-postgres
+    DB_USERNAME: arkheion
+    DB_PASSWORD: arkheion
+    DB_NAME: arkheion_production
+    RAILS_LOG_TO_STDOUT: true
+  secret:
+    - RAILS_MASTER_KEY
+    - ALLOWED_ORIGINS
+
+accessories:
+  postgres:
+    image: postgres:16-alpine
+    host: 0.0.0.0  # mesmo IP do droplet
+    port: 5432
+    env:
+      clear:
+        POSTGRES_USER: arkheion
+        POSTGRES_PASSWORD: arkheion
+        POSTGRES_DB: arkheion_production
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+
+healthcheck:
+  path: /up
+  port: 80

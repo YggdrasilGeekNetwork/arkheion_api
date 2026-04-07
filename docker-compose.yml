@@ -16,7 +16,7 @@ services:
   api:
     build: .
     ports:
-      - "80:80"
+      - "${PORT:-3000}:80"
     environment:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       DB_HOST: db
@@ -24,6 +24,7 @@ services:
       DB_PASSWORD: arkheion
       DB_NAME: arkheion_production
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      ENABLE_GRAPHIQL: ${ENABLE_GRAPHIQL:-false}
     depends_on:
       db:
         condition: service_healthy

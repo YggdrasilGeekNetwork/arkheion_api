@@ -5,6 +5,7 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 
 gem "bootsnap", require: false
+gem "kamal", require: false
 
 gem "thruster", require: false
 
@@ -29,7 +30,6 @@ gem "sprockets-rails"
 gem "sassc-rails"
 
 group :development, :test do
-  gem "dotenv-rails"
   gem "pry"
   gem "annotate"
   gem "brakeman", require: false
